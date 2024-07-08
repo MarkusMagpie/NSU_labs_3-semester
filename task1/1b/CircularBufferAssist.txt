@@ -1,0 +1,61 @@
+В таске 1b требуется расписать публичные методы для класса CircularBuffer.
+Кольцевой буфер - это массив, начало и конец которого замкнуты.
+Среди методов также имеем :
+    конструкторы по умолчанию, 
+    специфические конструкторы, 
+    деструкторы,
+    перегруженные операторы.
+Добавил 4 объекта класса с private спецификатором доступа: 
+    int head;                   индекс начального элемента буффера
+        * push_front            уменьшаем
+        * pop_front             увеличиваем
+        * front; operator[]     доступ к элементам
+    int tail;                   индекс для добавления нового элемента в конец буффера
+        * push_back             увеличиваем
+        * pop_back              уменьшаем
+        * back                  доступ к элементам
+    int buffer_size;            количество элементов в буффере
+        * push_back; push_front увеличиваем
+        * pop_back, pop_front   уменьшаем
+        * empty; full           проверка на пустоту
+        * operator[], at        проверка границ буффера
+    int buffer_capacity;        максимальное количество элементов в буффере
+
+Методы разделены на части: 
+    1 Constructors and Destructor
+    2 Element access: 
+        operator[](int i), 
+        operator[](int i) const, 
+        at(int i), 
+        at(int i) const, 
+        front(), 
+        front() const, 
+        back(),
+        back() const.
+    3 Buffer Management: 
+        linearize(), 
+        is_linearised(), 
+        rotate(int new_begin),
+        size(), 
+        empty(), 
+        full(), 
+        reserve(), 
+        capacity(), 
+        set_capacity(int new_capacity),
+        resize(int new_size, const value_type &item).
+    4 Modifiers: push_back(const value_type &item), 
+        push_front(const value_type &item),
+        pop_back(), 
+        pop_front(), 
+        insert(int pos, const value_type &item), 
+        erase(int first, int last), 
+        clear().
+    5 Out of class Operators: 
+        operator==(const CircularBuffer &a, const CircularBuffer &b),
+        operator!=(const CircularBuffer &a, const CircularBuffer &b).
+---------------------------------------------------------------------
+Перегрузка оператора индексации []: https://ravesli.com/urok-138-peregruzka-operatora-indeksatsii/
+Константные методы классов: https://ravesli.com/urok-123-klassy-i-const/
+По функциям для вектора: https://ravesli.com/urok-106-emkost-vektora-std-vector-v-kachestve-steka/#toc-2
+
+Google tests: https://google.github.io/googletest/primer.html

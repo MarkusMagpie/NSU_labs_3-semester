@@ -1,0 +1,12 @@
+Link the Tests with Google Test and BitArray Library:
+
+    g++ -std=c++14 -o t_BitArray t_BitArray.cpp BitArray.cpp -lgtest -lgtest_main -pthread
+'-std=c++14': use the C++14 standard
+'-o t_BitArray': the compiled program will be named 't_BitArray'
+'t_BitArray.cpp BitArray.cpp': files to compiled
+'-lgtest': link against Google Test Library
+'-lgtest_main': link against the Google Test main library, which provides the main function
+'-pthread': link against POSIX threads library (program now controls multiple threads of execution)
+
+Run the tests:
+    ./t_BitArray
