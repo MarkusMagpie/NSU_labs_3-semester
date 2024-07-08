@@ -1,0 +1,10 @@
+Link the Tests with Google Test and CircularBuffer Library:
+    g++ -std=c++14 -o t_CircularBuffer t_CircularBuffer.cpp CircularBuffer.cpp -lgtest -lgtest_main -pthread
+'-std=c++14': use the C++14 standard
+'-o t_CircularBuffer': the compiled program will be named 't_CircularBuffer'
+'t_CircularBuffer.cpp CircularBuffer.cpp': files to compiled
+'-lgtest': link against Google Test Library
+'-lgtest_main': link against the Google Test main library, which provides the main function
+'-pthread': link against POSIX threads library (program now controls multiple threads of execution)
+Run the tests:
+    ./t_CircularBuffer
