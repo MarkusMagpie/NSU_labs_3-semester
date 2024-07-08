@@ -91,3 +91,7 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+// how to compile:
+// g++ -std=c++11 -o word_count main.cpp
+// ./word_count input.txt output.csv
