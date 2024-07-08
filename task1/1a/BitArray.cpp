@@ -86,7 +86,7 @@ BitArray& BitArray::operator>>=(int n) {
     if (n >= static_cast<int>(bits.size())) {
         std::fill(bits.begin(), bits.end(), false);
     } else {
-        // std::rotate(bits.end(), bits.end() + n, bits.begin()); // not working?
+        // std::rotate(bits.end(), bits.end() + n, bits.begin()); // not working because bits.end() + n goes out of bounds => undefined behavior
         std::rotate(bits.rbegin(), bits.rbegin() + n, bits.rend());
         std::fill(bits.begin(), bits.begin() + n, false);
     }
