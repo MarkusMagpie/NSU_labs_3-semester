@@ -19,7 +19,7 @@ public:
     // constructor: names of competing strategies (3); number of steps; matix file
     PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file) : steps(steps) 
     {
-        for (const auto name : names) {
+        for (const auto &name : names) {
             strategies.push_back(StrategyFactory::GetInstance().CreateStrategy(name));
         }
         LoadMatrix(matrix_file);
@@ -84,31 +84,31 @@ public:
         // (moves[1] == 'C' ? 0 : 1) * 2 +
         // (moves[2] == 'C' ? 0 : 1);
         int index = 0;
-        for (int i = 0; i < moves.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(moves.size()); ++i) {
             if (moves[i] == 'C') {
                 index += 1 << i;
             }
         }
 
         // update scores
-        for (int i = 0; i < strategies.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             scores[i] += matrix[index][i];
         }
     }
 
     void UpdateHistories(const std::vector<char>& moves) {
-        for (int i = 0; i < strategies.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             histories[i].push_back(moves[i]);
         }
     }
 
     void PrintStepResults(int step, const std::vector<char>& moves) {
         std::cout << "Step " << step + 1 << ":\n";
-        for (int i = 0; i < strategies.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             std::cout << "Strategy " << i + 1 << " chose " << moves[i] << "\n";
         }
         std::cout << "Scores: ";
-        for (int i = 0; i < strategies.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             std::cout << scores[i] << " ";
         }
         std::cout << "\n\n";
@@ -116,7 +116,7 @@ public:
 
     void PrintFinalResults() {
         std::cout << "Final scores: \n";
-        for (int i = 0; i < strategies.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             std::cout << "Strategy " << i + 1 << ": " << scores[i] << "\n";
         }
     }
