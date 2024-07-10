@@ -1,0 +1,15 @@
+1 Create a basic class for fuiure strategies (Strategy.h)
+https://github.com/yangchenyun/learning-sicp/blob/master/practices/assignments/06.prisoner-s-dilemma/ps4prs.pdf
+
+2 realisation of 2 basic strategies: Poor-Trusting-Fool (always cooperate);
+                                     All-Defect (always defect).
+
+3 creation of strategy factory (StrategyFactory.h)
+here i basically code how to add new strategies to the map of strategies: creators
+
+4 creating main simulator (PrisonersDilemmaSimulator.h)
+it should control the game process (i guess)
+
+5 main function (main.cpp)
+
+6 write unit tests
