@@ -13,3 +13,21 @@ it should control the game process (i guess)
 5 main function (main.cpp)
 
 6 write unit tests
+
+about default_matrix.txt: 
+    6 6 6  - CCC - all 3 cooperate
+    3 3 10 - CCD
+        1(C)v2(C) => +3/+3 => 1player = 3; 2player = 3
+        1(C)v3(D) => +0/+5 => 1player = 3; 3player = 5 
+        2(C)v3(D) => +0/+5 => 2player = 3; 3player = 10
+        => 1player = 3; 2player = 3; 3player = 10;
+    3 10 3 - CDC
+    0 6 6 - CDD
+    10 3 3 - DCC
+    6 0 6 - DCD
+    6 6 0 - DDC
+    2 2 2 - DDD
+c/c = 3/3
+c/d = 0/5
+d/c = 5/0
+d/d = 1/1 
