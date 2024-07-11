@@ -18,7 +18,8 @@ private:
     std::vector<int> scores;
 public:
     // constructor: names of competing strategies (3); number of steps; matix file
-    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file) : steps(steps) 
+    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file) : 
+        steps(steps) 
     {
         for (const auto &name : names) {
             strategies.push_back(StrategyFactory::GetInstance().CreateStrategy(name));
@@ -30,8 +31,13 @@ public:
         Reset();
         for (int step = 0; step < steps; ++step) {
             std::vector<char> moves;
-            for (auto& strategy : strategies) {
-                moves.push_back(strategy->MakeMove(histories[0], histories[1], histories[2]));
+            // for (auto& strategy : strategies) {
+            //     moves.push_back(strategy->MakeMove(histories[0], histories[1], histories[2]));
+            // }
+            for (int i = 0; i < strategies.size(); ++i) {
+                std::vector<char> opp1_history = histories[(i + 1) % strategies.size()];
+                std::vector<char> opp2_history = histories[(i + 2) % strategies.size()];
+                moves.push_back(strategies[i]->MakeMove(histories[i], opp1_history, opp2_history));
             }
             UpdateScores(moves);
             UpdateHistories(moves);
@@ -46,7 +52,7 @@ public:
         std::cout << "Loading matrix from: " << matrix_file << std::endl;
         std::ifstream input(matrix_file);
         if (!input.is_open()) {
-            throw std::runtime_error("Failed to open file: " + matrix_file);
+            throw std::runtime_error("Failed to open matrix file: " + matrix_file);
         }
 
         std::string line;
@@ -61,21 +67,22 @@ public:
                 matrix.push_back(row);
             }
         }
-        std::cout << "Matrix loaded" << std::endl;
-        for (auto& row : matrix) {
-            for (auto& num : row) {
-                std::cout << num << " ";
-            }
-            std::cout << std::endl;
-        }
+        std::cout << "Matrix loaded successfully" << std::endl;
+        // for (auto& row : matrix) {
+        //     for (auto& num : row) {
+        //         std::cout << num << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
     }
 
     void Reset() {
         scores.assign(strategies.size(), 0);
         histories.assign(strategies.size(), std::vector<char>());
-        for (auto& strategy : strategies) {
-            strategy->reset();
-        }
+        // TODO - DELETE
+        // for (auto& strategy : strategies) {
+        //     strategy->reset();
+        // }
     }
 
     void UpdateScores(const std::vector<char>& moves) {

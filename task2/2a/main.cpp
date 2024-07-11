@@ -25,9 +25,21 @@ std::map<std::string, std::string> ParseCommandLine(int argc, char* argv[]) {
 }
 
 void RegisterBaseStrategies() {
-    StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", []() { return std::make_unique<PoorTrustingFool>(); });
-    StrategyFactory::GetInstance().RegisterStrategy("AllDefect", []() { return std::make_unique<AllDefect>(); });
+    auto base_strat1 = []() { return std::make_unique<PoorTrustingFool>(); };
+    auto base_strat2 = []() { return std::make_unique<AllDefect>(); };
+    auto base_strat3 = []() { return std::make_unique<Random>(); };
+    auto base_strat4 = []() { return std::make_unique<GoByMajority>(); };
+
+    StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", base_strat1);
+    StrategyFactory::GetInstance().RegisterStrategy("AllDefect", base_strat2);
+    StrategyFactory::GetInstance().RegisterStrategy("Random", base_strat3);
+    StrategyFactory::GetInstance().RegisterStrategy("GoByMajority", base_strat4);
 }
+// used lambda function here
+// each lambda has the type std::unique_ptr<Strategy>()
+// RegisterStrategy's 2nd argument type: std::function<std::unique_ptr<Strategy>()>  => 
+// given I already have std::unique_ptr<Strategy>() it will be implicitly converted to RegisterStrategy
+// https://metanit.com/cpp/tutorial/15.4.php
 
 int main(int argc, char* argv[]) {
     RegisterBaseStrategies();
@@ -65,7 +77,7 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file);
+        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file); // TODO: add config_dir
 
         if (simulation_mode == "detailed") {
             sim.Run(true);
