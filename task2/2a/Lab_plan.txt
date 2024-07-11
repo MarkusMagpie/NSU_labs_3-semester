@@ -31,3 +31,10 @@ c/c = 3/3
 c/d = 0/5
 d/c = 5/0
 d/d = 1/1 
+
+g++ -std=c++14  main.cpp
+./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10
+
+MEMORY LEAK CHECK:
+    g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
+    ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10

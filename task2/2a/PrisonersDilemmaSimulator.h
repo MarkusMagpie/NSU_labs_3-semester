@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 class PrisonersDilemmaSimulator {
 private: 
@@ -42,6 +43,7 @@ public:
     }
 
     void LoadMatrix(const std::string& matrix_file) {
+        std::cout << "Loading matrix from: " << matrix_file << std::endl;
         std::ifstream input(matrix_file);
         if (!input.is_open()) {
             throw std::runtime_error("Failed to open file: " + matrix_file);
@@ -49,18 +51,22 @@ public:
 
         std::string line;
         while (std::getline(input, line)) {
+            std::stringstream temp(line);
             std::vector<int> row;
-            std::string word;
-            for (char c : line) {
-                if (c == ' ') {
-                    row.push_back(std::stoi(word)); // stoi - string to int
-                    word.clear();
-                } else {
-                    word += c;
-                }
+            int num;
+            while (temp >> num) {
+                row.push_back(num);
             }
-            row.push_back(std::stoi(word));
-            matrix.push_back(row);
+            if (!row.empty()) {
+                matrix.push_back(row);
+            }
+        }
+        std::cout << "Matrix loaded" << std::endl;
+        for (auto& row : matrix) {
+            for (auto& num : row) {
+                std::cout << num << " ";
+            }
+            std::cout << std::endl;
         }
     }
 
