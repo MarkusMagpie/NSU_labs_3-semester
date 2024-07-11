@@ -76,3 +76,16 @@ public:
         return ((total_defections > total_cooperations) ? 'D' : 'C');
     }
 };
+
+// 5
+// returns last move of enemy in front of itself
+class TitForTat : public Strategy {
+public: 
+    TitForTat() {}
+    char MakeMove(const std::vector<char>& my_history, const std::vector<char>& opp1_history, const std::vector<char>& opp2_history) override {
+        if (my_history.empty()) {
+            return 'C';
+        }
+        return opp1_history.back();
+    }
+};

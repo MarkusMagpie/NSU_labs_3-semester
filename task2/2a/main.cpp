@@ -29,11 +29,13 @@ void RegisterBaseStrategies() {
     auto base_strat2 = []() { return std::make_unique<AllDefect>(); };
     auto base_strat3 = []() { return std::make_unique<Random>(); };
     auto base_strat4 = []() { return std::make_unique<GoByMajority>(); };
+    auto base_strat5 = []() { return std::make_unique<TitForTat>(); };
 
     StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", base_strat1);
     StrategyFactory::GetInstance().RegisterStrategy("AllDefect", base_strat2);
     StrategyFactory::GetInstance().RegisterStrategy("Random", base_strat3);
     StrategyFactory::GetInstance().RegisterStrategy("GoByMajority", base_strat4);
+    StrategyFactory::GetInstance().RegisterStrategy("TitForTat", base_strat5);
 }
 // used lambda function here
 // each lambda has the type std::unique_ptr<Strategy>()

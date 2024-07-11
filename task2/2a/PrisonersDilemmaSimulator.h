@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 class PrisonersDilemmaSimulator {
 private: 
@@ -31,9 +32,6 @@ public:
         Reset();
         for (int step = 0; step < steps; ++step) {
             std::vector<char> moves;
-            // for (auto& strategy : strategies) {
-            //     moves.push_back(strategy->MakeMove(histories[0], histories[1], histories[2]));
-            // }
             for (int i = 0; i < strategies.size(); ++i) {
                 std::vector<char> opp1_history = histories[(i + 1) % strategies.size()];
                 std::vector<char> opp2_history = histories[(i + 2) % strategies.size()];
@@ -132,5 +130,10 @@ public:
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             std::cout << "Strategy " << i + 1 << ": " << scores[i] << "\n";
         }
+        if ((scores[0] == scores[1]) && (scores[1] == scores[2])) {
+            std::cout << "All strategies have the same score!" << std::endl;
+            return;
+        }
+        std::cout << "Strategy with the highest score: " << std::max_element(scores.begin(), scores.end()) - scores.begin() + 1 << "\n";
     }
 };
