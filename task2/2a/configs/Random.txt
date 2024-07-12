@@ -1,0 +1,2 @@
+Name = Random
+Description = Cooperates or defects randomly

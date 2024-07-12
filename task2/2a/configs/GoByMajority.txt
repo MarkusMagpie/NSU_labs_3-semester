@@ -1,0 +1,2 @@
+Name = GoByMajority
+Description = Cooperates on first round, then follows the majority of opponent's previous choises

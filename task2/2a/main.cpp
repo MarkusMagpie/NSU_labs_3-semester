@@ -68,8 +68,8 @@ int main(int argc, char* argv[]) {
 
     // optional confiduration directory
     std::string config_dir;
-    if (args.find("config") != args.end()) {
-        config_dir = args["config"];
+    if (args.find("configs") != args.end()) {
+        config_dir = args["configs"];
     }
 
     // optional matrix file
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file); // TODO: add config_dir
+        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file, config_dir); // TODO: add config_dir
 
         if (simulation_mode == "detailed") {
             sim.Run(true);

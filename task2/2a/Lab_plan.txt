@@ -14,6 +14,9 @@ it should control the game process (i guess)
 
 6 write unit tests
 
+7 12/7/24 added configs directory with key/value for basic strategies
+curently has only name and description 
+
 about default_matrix.txt: 
     6 6 6  - CCC - all 3 cooperate
     3 3 10 - CCD

@@ -1,0 +1,2 @@
+Name = TitForTat
+Description = Cooperates on first round, then mimics opponent's previous move

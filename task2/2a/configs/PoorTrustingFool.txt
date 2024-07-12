@@ -1,0 +1,2 @@
+Name = PoorTrustingFool
+Description = Always cooperates

@@ -18,12 +18,17 @@ private:
     std::vector<std::vector<char>> histories;
     std::vector<int> scores;
 public:
-    // constructor: names of competing strategies (3); number of steps; matix file
-    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file) : 
+    // constructor: names of competing strategies (3); number of steps; configuration directory, matix file
+    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file, const std::string& config_dir = "") : 
         steps(steps) 
     {
         for (const auto &name : names) {
             strategies.push_back(StrategyFactory::GetInstance().CreateStrategy(name));
+        }
+        if (config_dir != "") {
+            LoadStrategyConfigs(config_dir);
+        } else {
+            std::cout << "No configuration directory provided" << std::endl;
         }
         LoadMatrix(matrix_file);
     }
@@ -65,22 +70,41 @@ public:
                 matrix.push_back(row);
             }
         }
-        std::cout << "Matrix loaded successfully" << std::endl;
-        // for (auto& row : matrix) {
-        //     for (auto& num : row) {
-        //         std::cout << num << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
+        std::cout << "Matrix loaded successfully" << "\n" << std::endl;
+    }
+
+    void LoadStrategyConfigs(const std::string& config_dir) {
+        std::cout << "Loading strategy configs from: " << config_dir << std::endl;
+        for (const auto& strategy : strategies) {
+            std::string config_file = config_dir + "/" + strategy->GetName() + ".txt";
+            std::ifstream input(config_file);
+            if (!input.is_open()) {
+                throw std::runtime_error("Failed to open config file: " + config_file);
+            }
+
+            std::string line;
+            while (std::getline(input, line)) {
+                if (line.empty() || line[0] == '#') {
+                    continue; // skip empty lines or comments
+                }
+
+                // parse pairs of key/value
+                // https://cplusplus.com/forum/general/266880/
+                auto delimiterPos = line.find("=");
+                auto key = line.substr(0, delimiterPos);
+                auto value = line.substr(delimiterPos + 1);
+                strategy->SetConfig(key, value);
+
+                std::cout << "Loaded config: " << key << " = " << value << std::endl;
+            }
+            input.close();
+        }
+        std::cout << "Strategy configs loaded successfully" << "\n" << std::endl;
     }
 
     void Reset() {
         scores.assign(strategies.size(), 0);
         histories.assign(strategies.size(), std::vector<char>());
-        // TODO - DELETE
-        // for (auto& strategy : strategies) {
-        //     strategy->reset();
-        // }
     }
 
     void UpdateScores(const std::vector<char>& moves) {
