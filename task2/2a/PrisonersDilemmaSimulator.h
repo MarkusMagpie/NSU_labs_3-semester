@@ -102,6 +102,14 @@ public:
         std::cout << "Strategy configs loaded successfully" << "\n" << std::endl;
     }
 
+    const std::vector<int>& GetScores() const {
+        return scores;
+    }
+
+    const std::vector<std::vector<char>>& GetHistories() const {
+        return histories;
+    }
+
     void Reset() {
         scores.assign(strategies.size(), 0);
         histories.assign(strategies.size(), std::vector<char>());
@@ -112,20 +120,26 @@ public:
         // example: ['C', 'D', 'C'] => index = 0 * 4 + 1 * 2 + 0 = 2
         // ccc = 0; ccd = 1; cdc = 2; cdd = 3, ...
 
-        // matrix example: matrix[2][3] = {{3,3,3}, {0,5,5}}
-
         // VERSION FOR 3 STRATEGIES ONLY
         // int index = (moves[0] == 'C' ? 0 : 1) * 4 + 
         // (moves[1] == 'C' ? 0 : 1) * 2 +
         // (moves[2] == 'C' ? 0 : 1);
         int index = 0;
         for (int i = 0; i < static_cast<int>(moves.size()); ++i) {
-            if (moves[i] == 'C') {
+            if (moves[moves.size() - i - 1] == 'D') {
                 index += 1 << i;
             }
         }
 
         // update scores
+        // std::cout << "Chosen index: " << index << "\n";
+
+        // std::cout << "Chosen line ";
+        // for (auto &elem : matrix[index]) {
+        //     std::cout << elem << " ";
+        // }
+        // std::cout << "\n";
+
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             scores[i] += matrix[index][i];
         }

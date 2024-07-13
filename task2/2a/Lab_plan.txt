@@ -38,6 +38,10 @@ d/d = 1/1
 g++ -std=c++14  main.cpp
 ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10
 
+GOOGLE TEST COMPILE:
+    g++ -std=c++14 -o t_DilemmaSimulator t_PrisonerDilemmaSimulator.cpp  -lgtest -lgtest_main -pthread
+    ./t_DilemmaSimulator
+
 MEMORY LEAK CHECK:
     g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
     ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10

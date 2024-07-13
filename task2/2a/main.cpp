@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file, config_dir); // TODO: add config_dir
+        PrisonersDilemmaSimulator sim(strategies, steps, matrix_file, config_dir);
 
         if (simulation_mode == "detailed") {
             sim.Run(true);

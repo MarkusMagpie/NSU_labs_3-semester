@@ -4,7 +4,7 @@
 #include <string>
 
 class Strategy {
-protected:
+protected: // protected for child classes; https://ravesli.com/urok-157-nasledovanie-i-spetsifikatory-dostupa-protected/
     std::string name;
     std::string description;
 public:
