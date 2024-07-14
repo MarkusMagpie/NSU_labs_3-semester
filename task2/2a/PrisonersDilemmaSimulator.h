@@ -19,6 +19,9 @@ private:
     std::vector<int> scores;
 
     std::map<std::pair<std::string, int>, int> tournament_scores;
+    std::map<std::tuple<int, int, int>, std::vector<std::vector<char>>> tournament_histories;
+    // key: std::tuple<int, int, int> - combos of strategy indices
+    // value: std::vector<std::vector<char>> - histories of each strategy
 public:
     // constructor: names of competing strategies (3); number of steps; configuration directory, matix file
     PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file, const std::string& config_dir = "") : 
@@ -88,6 +91,8 @@ public:
                         UpdateScores(moves);
                         UpdateHistories(moves);
                     }
+
+                    tournament_histories[std::make_tuple(i, j, k)] = histories;
                     
                     tournament_scores[std::make_pair(strategies[i]->GetName(), i)] += scores[0];
                     tournament_scores[std::make_pair(strategies[j]->GetName(), j)] += scores[1];
@@ -111,6 +116,15 @@ public:
             std::cout << i + 1 << ". " << strategies[i]->GetName() << ": " << tournament_scores[std::make_pair(strategies[i]->GetName(), i)] << std::endl;
         }
         std::cout << std::endl;
+
+        // std::cout << "Histories: " << std::endl;
+        // for (const auto& history : histories) {
+        //     for (const auto& move : history) {
+        //         std::cout << move << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
+        // std::cout << std::endl;
 
         // equal scores check
         int max_score = std::max_element(tournament_scores.begin(), tournament_scores.end(),
@@ -186,12 +200,21 @@ public:
         std::cout << "Strategy configs loaded successfully" << "\n" << std::endl;
     }
 
+    // getters for testing purposes
     const std::vector<int>& GetScores() const {
         return scores;
     }
 
     const std::vector<std::vector<char>>& GetHistories() const {
         return histories;
+    }
+
+    const std::map<std::pair<std::string, int>, int>& GetTournamentScores() const {
+        return tournament_scores;
+    }
+
+    const std::map<std::tuple<int, int, int>, std::vector<std::vector<char>>>& GetTournamentHistories() const {
+        return tournament_histories;
     }
 
     void Reset() {

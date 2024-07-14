@@ -42,6 +42,7 @@ d/d = 1/1
 GOOGLE TEST COMPILE:
     g++ -std=c++14 -o t_DilemmaSimulator t_PrisonerDilemmaSimulator.cpp  -lgtest -lgtest_main -pthread
     ./t_DilemmaSimulator
+GOOGLE TEST DOCS: https://github.com/google/googletest/blob/main/docs/reference/assertions.md
 
 MEMORY LEAK CHECK:
     g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp

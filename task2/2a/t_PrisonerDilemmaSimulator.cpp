@@ -233,8 +233,6 @@ TEST_F(PrisonersDilemmaSimulatorTest, TitForTat3Test) {
 TEST_F(PrisonersDilemmaSimulatorTest, TournamentFailTest) {
     std::vector<std::string> strategies = { "AllDefect", "PoorTrustingFool" };
     PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
-    
-    EXPECT_THROW(sim.RunTournament(), std::runtime_error);
 
     try {
         sim.RunTournament();
@@ -246,7 +244,41 @@ TEST_F(PrisonersDilemmaSimulatorTest, TournamentFailTest) {
     }
 }
 
+TEST_F(PrisonersDilemmaSimulatorTest, TournamentEqualScoresTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "PoorTrustingFool", "PoorTrustingFool", "PoorTrustingFool" };
+    PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
+    sim.RunTournament();
+    
+    const auto& tournament_scores = sim.GetTournamentScores(); // new getter function here
+    
+    int first_score = tournament_scores.begin()->second;
+    for (const auto& entry : tournament_scores) {
+        EXPECT_EQ(entry.second, first_score);
+    }
+}
 
+TEST_F(PrisonersDilemmaSimulatorTest, TournamentMixedStrategiesTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "AllDefect", "TitForTat", "Random" };
+    PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
+    sim.RunTournament();
+    
+    const auto& tournament_scores = sim.GetTournamentScores();
+    const auto& tournament_histories = sim.GetTournamentHistories();
+    
+    // check if strategies have non-zero scores and that histories are recorded
+    for (const auto& entry : tournament_scores) {
+        EXPECT_GT(entry.second, 0); // check that entry.second > 0
+    }
+
+    for (const auto& entry : tournament_histories) {
+        const auto& history = entry.second;
+        // std::cout << history.size() << std::endl;
+        for (const auto& action : history) {
+            std::cout << "Action size: " << action.size() << std::endl;
+            EXPECT_FALSE(action.empty());
+        }
+    }
+}
 
 int main(int argc, char* argv[]) {
     testing::InitGoogleTest(&argc, argv);
