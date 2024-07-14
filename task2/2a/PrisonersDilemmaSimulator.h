@@ -18,7 +18,7 @@ private:
     std::vector<std::vector<char>> histories;
     std::vector<int> scores;
 
-    std::map<std::string, int> tournament_scores;
+    std::map<std::pair<std::string, int>, int> tournament_scores;
 public:
     // constructor: names of competing strategies (3); number of steps; configuration directory, matix file
     PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file, const std::string& config_dir = "") : 
@@ -27,6 +27,8 @@ public:
         for (const auto &name : names) {
             strategies.push_back(StrategyFactory::GetInstance().CreateStrategy(name));
         }
+        // AFTER CREATING STRATEGIES ASSIGN DEFAULT VALUES FOR SCORES AND HISTORIES  
+        Reset();
 
         // if (config_dir != "configs") {
         LoadStrategyConfigs(config_dir);
@@ -38,7 +40,7 @@ public:
     }
 
     void Run(bool detailed = true) {
-        Reset();
+        std::cout << "---------------------------------------------------" << std::endl;
         for (int step = 0; step < steps; ++step) {
             std::vector<char> moves;
             for (int i = 0; i < strategies.size(); ++i) {
@@ -60,52 +62,77 @@ public:
             throw std::runtime_error("Number of strategies must be 3 or more for tournament mode!");
         }
 
-        Reset();
-        tournament_scores.clear(); // clear only here, RESET is univeral for all modes
+        std::cout << "--------------------------------" << std::endl;
         int round = 1;
+
+        std::cout << "List of indexes and strategies:" << std::endl;
+        for (int i = 0; i < strategies.size(); ++i) {
+            std::cout << i + 1 << ". " << strategies[i]->GetName() << std::endl;
+        } 
+        std::cout << std::endl;
 
         // generate all posible 3s without repetitions
         for (size_t i = 0; i < strategies.size(); ++i) {
             for (size_t j = i + 1; j < strategies.size(); ++j) {
                 for (size_t k = j + 1; k < strategies.size(); ++k) {
-                    // std::cout << i << " " << j << " " << k << std::endl;
                     std::vector<std::unique_ptr<Strategy>> cur_strats;
                     cur_strats.push_back(StrategyFactory::GetInstance().CreateStrategy(strategies[i]->GetName()));
                     cur_strats.push_back(StrategyFactory::GetInstance().CreateStrategy(strategies[j]->GetName()));
                     cur_strats.push_back(StrategyFactory::GetInstance().CreateStrategy(strategies[k]->GetName()));
 
-                
                     for (int step = 0; step < steps; ++step) {
                         std::vector<char> moves;
                         for (auto& strategy : cur_strats) {
                             moves.push_back(strategy->MakeMove(histories[0], histories[1], histories[2]));
                         }
-
                         UpdateScores(moves);
                         UpdateHistories(moves);
                     }
                     
-                    // add results of each 3 to tournament scores map
-                    tournament_scores[strategies[i]->GetName()] += scores[0];
-                    tournament_scores[strategies[j]->GetName()] += scores[1];
-                    tournament_scores[strategies[k]->GetName()] += scores[2];
+                    tournament_scores[std::make_pair(strategies[i]->GetName(), i)] += scores[0];
+                    tournament_scores[std::make_pair(strategies[j]->GetName(), j)] += scores[1];
+                    tournament_scores[std::make_pair(strategies[k]->GetName(), k)] += scores[2];
                 
                     std::cout << "Tournament round " << round++ << " results: " << std::endl;
-                    for (int i = 0; i < 3; ++i) {
-                        std::cout << cur_strats[i]->GetName() << ": " << tournament_scores[cur_strats[i]->GetName()] << "\n";
-                    }
+                    // std::cout << "(Index. Strategy: Round Score)" << std::endl;
+                    std::cout << i + 1 << ". " << strategies[i]->GetName() << ": " << scores[0] << "\n";
+                    std::cout << j + 1 << ". " << strategies[j]->GetName() << ": " << scores[1] << "\n";
+                    std::cout << k + 1 << ". " << strategies[k]->GetName() << ": " << scores[2] << "\n";
+
                     std::cout << std::endl;
                     Reset();
                 }
             }
         }
 
-        std::cout << "------------------------------------------------";
-        std::cout << "\n" << "Tournament results all participating strategies:" << std::endl;
-        for (const auto& pair : tournament_scores) {
-            std::cout << pair.first << ": " << pair.second << std::endl;
+        std::cout << "------------------------" << std::endl;
+        std::cout << "Tournament final results:" << std::endl;
+        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
+            std::cout << i + 1 << ". " << strategies[i]->GetName() << ": " << tournament_scores[std::make_pair(strategies[i]->GetName(), i)] << std::endl;
         }
-        std::cout << "Strategy with the highest score: " << std::max_element(scores.begin(), scores.end()) - scores.begin() + 1 << "\n" << std::endl;
+        std::cout << std::endl;
+
+        // equal scores check
+        int max_score = std::max_element(tournament_scores.begin(), tournament_scores.end(),
+            [](const auto& a, const auto& b) { return a.second < b.second; })->second;
+
+        std::vector<std::pair<std::string, int>> winners;
+        for (const auto& entry : tournament_scores) {
+            if (entry.second == max_score) {
+                winners.push_back(entry.first);
+            }
+        }
+
+        if (winners.size() == tournament_scores.size()) {
+            std::cout << "All tournament strategies have the same score!" << "\n" << std::endl;
+            return;
+        }
+
+        std::cout << "Strategy(-ies) with the highest score: " << std::endl;
+        for (const auto& winner : winners) {
+            std::cout << winner.second + 1 << ". " << winner.first << "\n";
+        }
+        std::cout << std::endl;
     }
 
     void LoadMatrix(const std::string& matrix_file) {
@@ -185,13 +212,20 @@ public:
         }
 
         // update scores
-        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
+        for (int i = 0; i < 3; ++i) {
+            // std::cout << "i = " << i << std::endl;
+            // std::cout << "Score[" << i << "] = " << scores[i] << std::endl;
+            // std::cout << "Matrix[" << index << "][" << i << "] = " << matrix[index][i] << std::endl;
+            // std::cout << "Old Score[" << i << "] = " << scores[i] << std::endl;
             scores[i] += matrix[index][i];
+            // std::cout << "New Score[" << i << "] = " << scores[i] << std::endl;
         }
     }
 
     void UpdateHistories(const std::vector<char>& moves) {
-        for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
+        for (int i = 0; i < 3; ++i) {
+            // std::cout << "Move[" << i << "] = " << moves[i] << std::endl;
+            // std::cout << "History[" << i << "] = " << histories[i].size() << std::endl;
             histories[i].push_back(moves[i]);
         }
     }
@@ -209,10 +243,11 @@ public:
     }
 
     void PrintFinalResults() {
-        std::cout << "Final scores: \n";
+        std::cout << "FINAL SCORES: \n";
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
             std::cout << strategies[i]->GetName() << " " << i + 1 << ": " << scores[i] << "\n";
         }
+        std::cout << "\n";
 
         bool all_equal = true;
         for (int i = 1; i < static_cast<int>(strategies.size()); ++i) {
@@ -227,6 +262,7 @@ public:
             return;
         }
 
-        std::cout << "Strategy with the highest score: " << std::max_element(scores.begin(), scores.end()) - scores.begin() + 1 << "\n" << std::endl;
+        std::cout << "Strategy with the highest score: " << std::max_element(scores.begin(), scores.end()) - scores.begin() + 1 << ".\n";
+        std::cout << strategies[std::max_element(scores.begin(), scores.end()) - scores.begin()]->GetName()  << " has won!"<< "\n" << std::endl;
     }
 };
