@@ -229,6 +229,23 @@ TEST_F(PrisonersDilemmaSimulatorTest, TitForTat3Test) {
     EXPECT_EQ(scores[2], 57);
 }
 
+// tests for tournament game mode
+TEST_F(PrisonersDilemmaSimulatorTest, TournamentFailTest) {
+    std::vector<std::string> strategies = { "AllDefect", "PoorTrustingFool" };
+    PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
+    
+    EXPECT_THROW(sim.RunTournament(), std::runtime_error);
+
+    try {
+        sim.RunTournament();
+    } catch (const std::runtime_error& e) {
+        EXPECT_STREQ(e.what(), "Number of strategies must be 3 or more for tournament mode!");
+        std::cout << e.what() << std::endl;
+    } catch (...) {
+        FAIL(); // FAIL means that we don't expect any other exceptions
+    }
+}
+
 int main(int argc, char* argv[]) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

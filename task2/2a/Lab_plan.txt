@@ -17,6 +17,10 @@ it should control the game process (i guess)
 7 12/7/24 added configs directory with key/value for basic strategies
 curently has only name and description 
 
+8 13/7/24 added tests for base strategies (t_PrisonerDilemmaSimulator.cpp)
+
+9 14/7/24 added tournament mode
+
 about default_matrix.txt: 
     6 6 6  - CCC - all 3 cooperate
     3 3 10 - CCD
@@ -35,13 +39,16 @@ c/d = 0/5
 d/c = 5/0
 d/d = 1/1 
 
-g++ -std=c++14  main.cpp
-./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10
-
 GOOGLE TEST COMPILE:
     g++ -std=c++14 -o t_DilemmaSimulator t_PrisonerDilemmaSimulator.cpp  -lgtest -lgtest_main -pthread
     ./t_DilemmaSimulator
 
 MEMORY LEAK CHECK:
     g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
-    ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10
+    ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10 --configs=configs --matrix=default_matrix.txt
+
+SUDO GDB DEBUG:
+    g++ -g -std=c++14 -o prisoners_dilemma main.cpp
+    sudo gdb ./prisoners_dilemma
+    run PoorTrustingFool PoorTrustingFool AllDefect --mode=tournament --steps=5 --configs=configs --matrix=default_matrix.txt
+    

@@ -50,15 +50,26 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    std::vector<std::string> strategies = { argv[1], argv[2], argv[3] };
+    std::vector<std::string> strategies;
+    int arg_index = 1;
+    while (arg_index < argc && argv[arg_index][0] != '-') {
+        strategies.push_back(argv[arg_index]);
+        ++arg_index;
+        // std::cout << "Strategy: " << argv[arg_index - 1] << std::endl;
+    }
     
-    auto args = ParseCommandLine(argc, argv);
+    auto args = ParseCommandLine(argc - arg_index + 1, &argv[arg_index - 1]);
 
     // simulation mode
-    std::string simulation_mode = args["mode"];
-    if (simulation_mode.empty()) {
-        simulation_mode = (strategies.size() > 3) ? "tournament" : "detailed";
+    std::string simulation_mode = (strategies.size() > 3) ? "tournament" : "detailed";
+    if (args.find("mode") != args.end()) {
+        simulation_mode = args["mode"];
     }
+    // if ((strategies.size() < 3) && (simulation_mode == "tournament")) {
+    //     std::cout << "Number of strategies must be 3 or more for tournament mode!" << std::endl;
+    //     std::cerr << "Invalid simulation mode: " << simulation_mode << std::endl;
+    //     return 0;
+    // }
 
     // optional numer of steps
     int steps = 10;
@@ -86,8 +97,7 @@ int main(int argc, char* argv[]) {
         } else if (simulation_mode == "fast") {
             sim.Run(false);
         } else if (simulation_mode == "tournament") {
-            // TODO
-            return 0;
+            sim.RunTournament();
         } else {
             std::cerr << "Unknown simulation mode: " << simulation_mode << std::endl;
             return 0;
