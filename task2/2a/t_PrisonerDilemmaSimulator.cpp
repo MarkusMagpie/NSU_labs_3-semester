@@ -272,11 +272,15 @@ TEST_F(PrisonersDilemmaSimulatorTest, TournamentMixedStrategiesTest) {
 
     for (const auto& entry : tournament_histories) {
         const auto& history = entry.second;
-        // std::cout << history.size() << std::endl;
+        int non_empty_count = 0;
         for (const auto& action : history) {
-            std::cout << "Action size: " << action.size() << std::endl;
-            EXPECT_FALSE(action.empty());
+            if (!action.empty()) {
+                non_empty_count++;
+            }
         }
+
+        std::cout << "Non-empty vectors count: " << non_empty_count << std::endl;
+        EXPECT_EQ(non_empty_count, 3);
     }
 }
 

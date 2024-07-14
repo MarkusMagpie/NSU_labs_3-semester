@@ -94,6 +94,7 @@ public:
 
                     tournament_histories[std::make_tuple(i, j, k)] = histories;
                     
+                    
                     tournament_scores[std::make_pair(strategies[i]->GetName(), i)] += scores[0];
                     tournament_scores[std::make_pair(strategies[j]->GetName(), j)] += scores[1];
                     tournament_scores[std::make_pair(strategies[k]->GetName(), k)] += scores[2];
