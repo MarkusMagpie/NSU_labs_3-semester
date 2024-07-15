@@ -50,6 +50,9 @@ public:
         } else {
             std::cout << "-----FAST MODE-----" << std::endl;
         }
+        if (strategies.size() != 3) {
+            throw std::runtime_error("Number of strategies must be 3 for fast (or long) mode!");
+        }
 
         for (int step = 0; step < steps; ++step) {
             std::vector<char> moves;
@@ -71,6 +74,10 @@ public:
 
     void RunDetailed() {
         std::cout << "-----DETAILED MODE-----" << std::endl;
+        if (strategies.size() != 3) {
+            throw std::runtime_error("Number of strategies must be 3 for detailed mode!");
+        }
+    
         for (int step = 0; step < steps; ++step) {
             std::cout << "Press Enter to proceed to the next step or type 'quit' to exit: ";
             std::string input;
@@ -99,8 +106,8 @@ public:
                 std::cout << strategies[i]->GetName() << ": " << moves[i] << "; score: " << scores[i] << "\n";
             }
         }
-
-        // std::cout << "------------------------" << std::endl;
+        
+        std::cout << "-----------------------" << std::endl;
         PrintFinalResults();
     }
 
