@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iomanip> // for setw in RunDeatiled
 
 class PrisonersDilemmaSimulator {
 private: 
@@ -24,7 +25,7 @@ private:
     // value: std::vector<std::vector<char>> - histories of each strategy
 public:
     // constructor: names of competing strategies (3); number of steps; configuration directory, matix file
-    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file, const std::string& config_dir = "") : 
+    PrisonersDilemmaSimulator(const std::vector<std::string>& names, int steps, const std::string& matrix_file = "default_matrix.txt", const std::string& config_dir = "configs") : 
         steps(steps) 
     {
         for (const auto &name : names) {
@@ -32,18 +33,23 @@ public:
         }
         // AFTER CREATING STRATEGIES ASSIGN DEFAULT VALUES FOR SCORES AND HISTORIES  
         Reset();
+        
+        if (config_dir.empty()) {
+            std::string base_config = "configs";
+            LoadStrategyConfigs(base_config);
+        } else {
+            LoadStrategyConfigs(config_dir);
+        }
 
-        // if (config_dir != "configs") {
-        LoadStrategyConfigs(config_dir);
-        // } else { std::cout << "No configuration directory provided, using default: configs" << std::endl; }
-
-        // if (matrix_file != "default_matrix.txt") {
         LoadMatrix(matrix_file);
-        // } else { std::cout << "No matrix file provided, using default: default_matrix.txt" << std::endl; }
     }
 
-    void Run(bool detailed = true) {
-        std::cout << "---------------------------------------------------" << std::endl;
+    void Run(bool descriptions = false) {
+        if (descriptions) {
+            std::cout << "-----LONG MODE-----" << std::endl;
+        } else {
+            std::cout << "-----FAST MODE-----" << std::endl;
+        }
         for (int step = 0; step < steps; ++step) {
             std::vector<char> moves;
             for (int i = 0; i < strategies.size(); ++i) {
@@ -53,14 +59,49 @@ public:
             }
             UpdateScores(moves);
             UpdateHistories(moves);
-            if (detailed) {
+            if (descriptions) {
                 PrintStepResults(step, moves);
             }
         }
         PrintFinalResults();
     }
 
+    void RunDetailed() {
+        std::cout << "-----DETAILED MODE-----" << std::endl;
+        for (int step = 0; step < steps; ++step) {
+            std::cout << "Press Enter to proceed to the next step or type 'quit' to exit: ";
+            std::string input;
+            std::getline(std::cin, input);
+            if (input == "quit") {
+                std::cout << "Simulation interrupted by user.\n" << std::endl;
+                break;
+            }
+
+            std::vector<char> moves;
+            for (auto& strategy : strategies) {
+                moves.push_back(strategy->MakeMove(histories[0], histories[1], histories[2]));
+            }
+
+            UpdateScores(moves);
+            UpdateHistories(moves);
+            
+            std::cout << "Step " << step + 1 << " results:" << std::endl;
+            int max_name_len = 0;
+            for (const auto& strategy : strategies) {
+                max_name_len = std::max(max_name_len, static_cast<int>(strategy->GetName().length()));
+            }
+
+            for (size_t i = 0; i < strategies.size(); ++i) {
+                std::cout << std::setw(max_name_len) << std::left;
+                std::cout << strategies[i]->GetName() << ": " << moves[i] << "; score: " << scores[i] << "\n";
+            }
+        }
+
+        PrintFinalResults();
+    }
+
     void RunTournament() {
+        std::cout << "-----TOURNAMENT MODE-----" << std::endl;
         if (strategies.size() < 3) {
             throw std::runtime_error("Number of strategies must be 3 or more for tournament mode!");
         }
@@ -118,15 +159,6 @@ public:
         }
         std::cout << std::endl;
 
-        // std::cout << "Histories: " << std::endl;
-        // for (const auto& history : histories) {
-        //     for (const auto& move : history) {
-        //         std::cout << move << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-        // std::cout << std::endl;
-
         // equal scores check
         int max_score = std::max_element(tournament_scores.begin(), tournament_scores.end(),
             [](const auto& a, const auto& b) { return a.second < b.second; })->second;
@@ -173,7 +205,8 @@ public:
     }
 
     void LoadStrategyConfigs(const std::string& config_dir) {
-        std::cout << "\n" << "Loading strategy configs from: " << config_dir << std::endl;
+        std::cout << "\n" << "Loading strategy configurations from: " << config_dir << std::endl;   
+        
         for (const auto& strategy : strategies) {
             std::string config_file = config_dir + "/" + strategy->GetName() + ".txt";
             std::ifstream input(config_file);
@@ -267,9 +300,13 @@ public:
     }
 
     void PrintFinalResults() {
-        std::cout << "FINAL SCORES: \n";
+        int max_name_len = 0;
+        for (const auto& strategy : strategies) {
+            max_name_len = std::max(max_name_len, static_cast<int>(strategy->GetName().length()));
+        }
+        std::cout << "-----FINAL SCORES:-----\n";
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
-            std::cout << strategies[i]->GetName() << " " << i + 1 << ": " << scores[i] << "\n";
+            std::cout << std::setw(max_name_len) << std::left << strategies[i]->GetName() << ": " << scores[i] << "\n";
         }
         std::cout << "\n";
 

@@ -279,9 +279,59 @@ TEST_F(PrisonersDilemmaSimulatorTest, TournamentMixedStrategiesTest) {
             }
         }
 
-        std::cout << "Non-empty vectors count: " << non_empty_count << std::endl;
+        // std::cout << "Non-empty vectors count: " << non_empty_count << std::endl;
         EXPECT_EQ(non_empty_count, 3);
     }
+}
+
+// tests for detailed mode
+TEST_F(PrisonersDilemmaSimulatorTest, DetailedModeQuitTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "TitForTat", "AllDefect" };
+    PrisonersDilemmaSimulator sim(strategies, 5, matrix_file, config_dir);
+
+    // CiN PLAN: 1 save cin buffer; 
+    // 2 create istringstream object; 
+    // 3 redirect cin to istringstream object; 
+    // 4 run detailed simulation; 
+    // 5 restore cin buffer
+    std::streambuf* orig_cin = std::cin.rdbuf(); // std::cin.rdbuf() returns pointer to std::cin buffer/ save original cin buffer
+    std::streambuf* orig_cout = std::cout.rdbuf();
+    std::istringstream input("quit\n"); // simulate user input: "quit"
+    std::ostringstream output;
+
+    std::cin.rdbuf(input.rdbuf()); // redirect std::cin to read from input stream
+    std::cout.rdbuf(output.rdbuf());
+
+    sim.RunDetailed();
+
+    // Reset cin and cout
+    std::cin.rdbuf(orig_cin); // restore std::cin buffer
+    std::cout.rdbuf(orig_cout);
+
+    std::string expected_output = "Simulation interrupted by user.\n";
+    EXPECT_NE(output.str().find(expected_output), std::string::npos); // check that output contains expected_output
+}
+
+TEST_F(PrisonersDilemmaSimulatorTest, DetailedModeMoveTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "TitForTat", "AllDefect" };
+    PrisonersDilemmaSimulator sim(strategies, 1, matrix_file, config_dir);
+
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    std::streambuf* orig_cout = std::cout.rdbuf();
+    std::istringstream input("enter\nquit\n");
+    std::ostringstream output;
+    std::cin.rdbuf(input.rdbuf());
+    std::cout.rdbuf(output.rdbuf());
+
+    sim.RunDetailed();
+
+    std::cin.rdbuf(orig_cin);
+    std::cout.rdbuf(orig_cout);
+
+    const std::vector<int>& scores = sim.GetScores();
+    EXPECT_EQ(scores[0], 3); // PoorTrustingFool
+    EXPECT_EQ(scores[1], 3); // TitForTat
+    EXPECT_EQ(scores[2], 10); // AllDefect
 }
 
 int main(int argc, char* argv[]) {

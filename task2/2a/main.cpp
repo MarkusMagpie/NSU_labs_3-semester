@@ -55,7 +55,6 @@ int main(int argc, char* argv[]) {
     while (arg_index < argc && argv[arg_index][0] != '-') {
         strategies.push_back(argv[arg_index]);
         ++arg_index;
-        // std::cout << "Strategy: " << argv[arg_index - 1] << std::endl;
     }
     
     auto args = ParseCommandLine(argc - arg_index + 1, &argv[arg_index - 1]);
@@ -65,11 +64,6 @@ int main(int argc, char* argv[]) {
     if (args.find("mode") != args.end()) {
         simulation_mode = args["mode"];
     }
-    // if ((strategies.size() < 3) && (simulation_mode == "tournament")) {
-    //     std::cout << "Number of strategies must be 3 or more for tournament mode!" << std::endl;
-    //     std::cerr << "Invalid simulation mode: " << simulation_mode << std::endl;
-    //     return 0;
-    // }
 
     // optional numer of steps
     int steps = 10;
@@ -93,9 +87,11 @@ int main(int argc, char* argv[]) {
         PrisonersDilemmaSimulator sim(strategies, steps, matrix_file, config_dir);
 
         if (simulation_mode == "detailed") {
-            sim.Run(true);
+            sim.RunDetailed();
         } else if (simulation_mode == "fast") {
             sim.Run(false);
+        } else if (simulation_mode == "long") {
+            sim.Run(true);   
         } else if (simulation_mode == "tournament") {
             sim.RunTournament();
         } else {
