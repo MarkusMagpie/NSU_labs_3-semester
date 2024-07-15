@@ -46,7 +46,7 @@ GOOGLE TEST DOCS: https://github.com/google/googletest/blob/main/docs/reference/
 
 MEMORY LEAK CHECK:
     g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
-    ./a.out PoorTrustingFool AllDefect AllDefect --mode=detailed --steps=10 --configs=configs --matrix=default_matrix.txt
+    ./a.out PoorTrustingFool AllDefect AllDefect --mode=long --steps=10 --configs=configs --matrix=default_matrix.txt
 
 SUDO GDB DEBUG:
     g++ -g -std=c++14 -o prisoners_dilemma main.cpp

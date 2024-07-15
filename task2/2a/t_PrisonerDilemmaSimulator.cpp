@@ -59,20 +59,9 @@ TEST_F(PrisonersDilemmaSimulatorTest, CCDTest) {
     const std::vector<int>& scores = sim.GetScores();
     const std::vector<std::vector<char>>& histories = sim.GetHistories();
 
-    // for (int score : scores) {
-    //     std::cout << score << std::endl;
-    // }
-
     EXPECT_EQ(scores[0], 30);
     EXPECT_EQ(scores[1], 30);
     EXPECT_EQ(scores[2], 100);
-
-    // for (const auto& history : histories) {
-    //     for (char move : history) {
-    //         std::cout << move << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
 }
 
 TEST_F(PrisonersDilemmaSimulatorTest, CDCTest) {
@@ -332,6 +321,34 @@ TEST_F(PrisonersDilemmaSimulatorTest, DetailedModeMoveTest) {
     EXPECT_EQ(scores[0], 3); // PoorTrustingFool
     EXPECT_EQ(scores[1], 3); // TitForTat
     EXPECT_EQ(scores[2], 10); // AllDefect
+}
+
+// matrix exception tests
+TEST_F(PrisonersDilemmaSimulatorTest, LoadMatrixFileNotFoundTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "TitForTat", "AllDefect" };
+
+    try {
+        PrisonersDilemmaSimulator sim(strategies, 1, "nonexistent_file.txt", config_dir);
+        sim.RunTournament();
+
+    } catch (const std::runtime_error& e) {
+        EXPECT_STRNE(e.what(), "");
+        EXPECT_STRCASEEQ(e.what(), "Failed to open matrix file: nonexistent_file.txt");
+    }
+}
+
+// config exception tests
+TEST_F(PrisonersDilemmaSimulatorTest, LoadStrategyConfigsFileNotFoundTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "PoorTrustingFool", "PoorTrustingFool" };
+
+    try {
+        PrisonersDilemmaSimulator sim(strategies, 1, "default_matrix.txt", "nonexistent_config_dir");
+        sim.LoadStrategyConfigs("nonexistent_config_dir");
+        FAIL() << "Expected std::runtime_error to be thrown";
+    } catch (const std::runtime_error& e) {
+        EXPECT_STRNE(e.what(), "");
+        EXPECT_STRCASEEQ(e.what(), "Failed to open config file: nonexistent_config_dir/PoorTrustingFool.txt");
+    }
 }
 
 int main(int argc, char* argv[]) {
