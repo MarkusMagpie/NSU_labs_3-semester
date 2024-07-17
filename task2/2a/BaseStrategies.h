@@ -78,18 +78,6 @@ public:
             }
         }
 
-        // std::cout << "enemy1 history: ";
-        // for (char move: opp1_history) {
-        //     std::cout << move << " ";
-        // }
-        // std::cout << std::endl;
-
-        // std::cout << "enemy2 history: ";
-        // for (char move: opp2_history) {
-        //     std::cout << move << " ";
-        // }
-        // std::cout << std::endl;
-
         return ((total_defections > total_cooperations) ? 'D' : 'C');
     }
 };

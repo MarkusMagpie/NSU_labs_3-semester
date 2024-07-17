@@ -1,0 +1,2 @@
+Name = GrimTrigger
+Description = Cooperates until the opponent defects. Once the opponent defects, it defects for the rest of the game

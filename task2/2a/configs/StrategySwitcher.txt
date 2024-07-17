@@ -1,0 +1,2 @@
+Name = StrategySwitcher
+Description = Switches strategy every few rounds

@@ -1,5 +1,6 @@
 #include "PrisonersDilemmaSimulator.h"
 #include "BaseStrategies.h"
+#include "CustomStrategies.h"
 
 #include <map>
 #include <string>
@@ -31,11 +32,17 @@ void RegisterBaseStrategies() {
     auto base_strat4 = []() { return std::make_unique<GoByMajority>(); };
     auto base_strat5 = []() { return std::make_unique<TitForTat>(); };
 
+    auto custom_strat1 = []() { return std::make_unique<GrimTrigger>(); };
+    auto custom_strat2 = []() { return std::make_unique<StrategySwitcher>(); };
+
     StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", base_strat1);
     StrategyFactory::GetInstance().RegisterStrategy("AllDefect", base_strat2);
     StrategyFactory::GetInstance().RegisterStrategy("Random", base_strat3);
     StrategyFactory::GetInstance().RegisterStrategy("GoByMajority", base_strat4);
     StrategyFactory::GetInstance().RegisterStrategy("TitForTat", base_strat5);
+
+    StrategyFactory::GetInstance().RegisterStrategy("GrimTrigger", custom_strat1);
+    StrategyFactory::GetInstance().RegisterStrategy("StrategySwitcher", custom_strat2);
 }
 // used lambda function here
 // each lambda has the type std::unique_ptr<Strategy>()
