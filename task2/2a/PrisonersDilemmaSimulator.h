@@ -284,7 +284,7 @@ public:
     void PrintStepResults(int step, const std::vector<char>& moves) {
         std::cout << "Step " << step + 1 << ":\n";
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
-            std::cout << "Strategy " << i + 1 << " chose " << moves[i] << "\n";
+            std::cout << i + 1 << ". "<< strategies[i]->GetName() << " chose " << moves[i] << "\n";
         }
         std::cout << "Scores: ";
         for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
@@ -292,65 +292,6 @@ public:
         }
         std::cout << "\n\n";
     }
-
-    // void PrintFinalResults() {
-    //     std::cout << "Final results:" << std::endl;
-    //     for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
-    //         std::cout << i + 1 << ". " << strategies[i]->GetName() << ": " << scores[i] << std::endl;
-    //     }
-    //     std::cout << std::endl;
-
-    //     // equal scores check
-    //     int max_score = *std::max_element(scores.begin(), scores.end());
-
-    //     std::vector<std::pair<std::string, int>> winners;
-    //     for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
-    //         if (scores[i] == max_score) {
-    //             winners.push_back(std::make_pair(strategies[i]->GetName(), i));
-    //         }
-    //     }
-
-    //     if (winners.size() == scores.size()) {
-    //         std::cout << "All strategies have the same score!" << "\n" << std::endl;
-    //         return;
-    //     }
-
-    //     std::cout << "Strategy(-ies) with the highest score: " << std::endl;
-    //     for (const auto& winner : winners) {
-    //         std::cout << winner.second + 1 << ". " << winner.first << "\n";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
-    // void PrintTournamentFinalResults() {
-    //     std::cout << "Tournament final results:" << std::endl;
-    //     for (int i = 0; i < static_cast<int>(strategies.size()); ++i) {
-    //         std::cout << i + 1 << ". " << strategies[i]->GetName() << ": " << tournament_scores[std::make_pair(strategies[i]->GetName(), i)] << std::endl;
-    //     }
-    //     std::cout << std::endl;
-
-    //     // equal scores check
-    //     int max_score = std::max_element(tournament_scores.begin(), tournament_scores.end(),
-    //         [](const auto& a, const auto& b) { return a.second < b.second; })->second;
-
-    //     std::vector<std::pair<std::string, int>> winners;
-    //     for (const auto& entry : tournament_scores) {
-    //         if (entry.second == max_score) {
-    //             winners.push_back(entry.first);
-    //         }
-    //     }
-
-    //     if (winners.size() == tournament_scores.size()) {
-    //         std::cout << "All tournament strategies have the same score!" << "\n" << std::endl;
-    //         return;
-    //     }
-
-    //     std::cout << "Strategy(-ies) with the highest score: " << std::endl;
-    //     for (const auto& winner : winners) {
-    //         std::cout << winner.second + 1 << ". " << winner.first << "\n";
-    //     }
-    //     std::cout << std::endl;
-    // }
 
     void PrintFinalResults() {
         std::cout << "Final results:" << std::endl;
