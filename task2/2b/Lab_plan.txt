@@ -1,0 +1,35 @@
+18/7/24
+    Universe - класс для представления работы вселенной игры (вывод/изменение поля)
+    Rule - класс для хранения правил перехода(2 строка входного файла: Bx/Sy)
+    FileHandler - будет класс читать и записывать файлы
+    CommandHandler - обработка игровых команд вводимых пользователем
+    Game - класс управления процессом игры
+
+MEMORY LEAK CHECK:
+    g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
+    ./a.out input.txt -i input.txt -o output.txt
+
+SUDO GDB DEBUG:
+    g++ -g -std=c++14 -o life main.cpp
+    sudo gdb ./life
+    run input.txt -i input.txt -o output.txt
+
+GOOGLE TEST COMPILE:
+    g++ -std=c++14 -o UniverseGame t_UniverseGame.cpp  -lgtest -lgtest_main -pthread
+    ./t_UniverseGame
+GOOGLE TEST DOCS: https://github.com/google/googletest/blob/main/docs/reference/assertions.md
+
+РАБОТА С КОМАНДНОЙ СТРОКОЙ В MAIN.CPP
+argv[1] = input.txt
+    std::string file = argv[1];
+    Game game(file);
+argv[2] = "-i"
+argv[3] = 10
+    int iterations = std::stoi(argv[3]);
+argv[4] = "-o"
+argv[5] = output.txt
+    std::string output_file = (argc > 5 && (std::string(argv[4]) == "-o" || std::string(argv[4]) == "--output")) 
+            ? argv[5]
+            : "output.txt";
+Если у нас присутствуют все вышеперечисленные аргументы, запускаем Offline мод игры:
+    game.OfflineMode(iterations, output_file);
