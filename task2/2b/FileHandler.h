@@ -22,7 +22,7 @@ Universe FileHandler::LoadFromFile(const std::string& filename) {
 
     std::string line;
     std::getline(input, line);
-    if (line != "Life 1.06") {
+    if (line.substr(0, 4) != "Life") {
         throw std::runtime_error("Invalid file format");
     }
 

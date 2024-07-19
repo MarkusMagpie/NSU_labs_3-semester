@@ -72,7 +72,10 @@ void CommandHandler::Tick(const std::string& cmds) {
 }
 
 void CommandHandler::Exit(const std::string& cmds) {
-    std::cout << "Goodbye!" << std::endl;
+    std::cout << "\n-----EXIT-----" << std::endl;
+    std::cout << "Loading final universe iteration into default output file..." << std::endl;
+    commands["dump"](" output.txt ");
+    // std::cout << "Goodbye!" << std::endl;
     std::exit(0);
 }
 

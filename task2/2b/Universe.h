@@ -45,11 +45,19 @@ void Universe::print() const {
 }
 
 void Universe::tick(int iterations) {
+    // std::cout << "width: " << width << ", height: " << height << std::endl;
+    // for (int y = 0; y < height; ++y) {
+    //     for (int x = 0; x < width; ++x) {
+    //         std::cout << "coords: (" << x << ", " << y << ")" << std::endl;
+    //     }
+    // }
+
     for (int i = 0; i < iterations; ++i) {
         std::vector<std::vector<bool>> new_grid = grid;
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 int live_neighbors = CountAliveNeighbors(x, y);
+                // std::cout << "coords: (" << x << ", " << y << "), live neighbors: " << live_neighbors << std::endl;
                 if (grid[y][x]) {
                     new_grid[y][x] = rule.IsSurvival(live_neighbors);
                 } else {
@@ -68,12 +76,14 @@ int Universe::CountAliveNeighbors(int x, int y) const {
     for (int dy = -1; dy <= 1; dy++) {
         for (int dx = -1; dx <= 1; dx++) {
             if (dx == 0 && dy == 0) continue;
-            int nx = (x + dx + width) % width; // % width in case of (x + dx) < 0 || (x + dx) >= width
-            int ny = (y + dy + height) % height;
+            int nx = x + dx; // % width in case of (x + dx) < 0 || (x + dx) >= width
+            int ny = y + dy;
+            if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
             // check < 0 || >= height is not needed because nx and ny will be here: [0, width) and [0, height)
             if (grid[ny][nx]) cnt++;
         }
     }
+    // if (grid[y][x]) cnt++;
 
     return cnt;
 }
