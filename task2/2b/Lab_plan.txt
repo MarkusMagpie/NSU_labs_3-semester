@@ -7,7 +7,7 @@
 
 MEMORY LEAK CHECK:
     g++ -g -fno-omit-frame-pointer -fsanitize=address -std=c++14 main.cpp
-    ./a.out input.txt -i input.txt -o output.txt
+    ./a.out input.txt -i 10 -o output.txt
 
 SUDO GDB DEBUG:
     g++ -g -std=c++14 -o life main.cpp
@@ -16,14 +16,14 @@ SUDO GDB DEBUG:
 
 GOOGLE TEST COMPILE:
     g++ -std=c++14 -o UniverseGame t_UniverseGame.cpp  -lgtest -lgtest_main -pthread
-    ./t_UniverseGame
+    ./UniverseGame
 GOOGLE TEST DOCS: https://github.com/google/googletest/blob/main/docs/reference/assertions.md
 
 РАБОТА С КОМАНДНОЙ СТРОКОЙ В MAIN.CPP
 argv[1] = input.txt
     std::string file = argv[1];
     Game game(file);
-argv[2] = "-i"
+argv[2] = "-i" 
 argv[3] = 10
     int iterations = std::stoi(argv[3]);
 argv[4] = "-o"
@@ -33,3 +33,9 @@ argv[5] = output.txt
             : "output.txt";
 Если у нас присутствуют все вышеперечисленные аргументы, запускаем Offline мод игры:
     game.OfflineMode(iterations, output_file);
+
+20/7/24 
+    В работе с командной стрококой добавлена возможность получения в качестве аргумента
+        argv[2] = "-i" || argv[2] = "--iterations=x"
+        argv[3] = "-o" || argv[3] = "--output=x"
+    Теперь оба варианта командной строки работают верно
