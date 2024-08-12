@@ -9,15 +9,16 @@
 #include <iomanip> // for output formatting
 
 // I extract words from line in this function and return a vector of words
-std::vector<std::string> extractWords(std::string& line) {
+std::vector<std::string> ExtractWords(std::string& line) {
     std::vector<std::string> words;
     std::string word; // element of vector, later will be added to vector
     for (char c: line) {
         if (isalnum(c)) {
             word += tolower(c);
         } else {
-            if (!word.empty()) { // встретил разделитель, значит вставляю слово в вектор
+            if (!word.empty()) { // if separator found, add word to vector
                 words.push_back(word); // 106 - вектор в качестве стека
+                // https://ravesli.com/urok-106-emkost-vektora-std-vector-v-kachestve-steka/#toc-2
                 word.clear();
             }
         }
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
     std::string line;
     int word_counter = 0;
     while (std::getline(input, line)) {
-        auto words = extractWords(line); // extract words from the line
+        std::vector<std::string> words = ExtractWords(line); // extract all words from one line
         for (std::string &word : words) { // increment word frequency in the map
             word_counter++;
             word_freq[word]++;
@@ -71,9 +72,8 @@ int main(int argc, char *argv[]) {
         return a.second > b.second;
     };
     sorted_words.sort(DescendSort); // sort with lambda function DescendSort
-    // std::sort(sorted_words.rbegin(), sorted_words.rend()); - convert list to a vector, sort it, and then convert it back to list???
 
-    // std::ofstream out - поток для записи в файл
+    // std::ofstream out - поток для записи (выходной поток) в файл
     std::ofstream output(argv[2]);
     if (!output.is_open()) {
         std::cerr << "Error: Cannot open output file" << std::endl;
