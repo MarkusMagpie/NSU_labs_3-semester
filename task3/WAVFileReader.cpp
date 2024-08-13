@@ -1,5 +1,3 @@
-#pragma once
-
 #include "WAVFileReader.h"
 
 WAVFileReader::WAVFileReader(const std::string& filename) :
@@ -38,7 +36,7 @@ void WAVFileReader::ReadHeader() {
         throw std::runtime_error("Wrong WAV file format, must be PCM, 16-bit mono audio");
     }
 
-    sample_rate = header.sampleRate;
+    sample_rate = header.sample_rate;
     num_samples = header.dataSize / (header.bitsPerSample / 8); // всего байтов / байтов на 1 сэмпл
 }
 

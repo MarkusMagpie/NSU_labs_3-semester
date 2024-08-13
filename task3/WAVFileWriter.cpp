@@ -1,5 +1,3 @@
-#pragma once
-
 #include "WAVFileWriter.h"
 
 WAVFileWriter::WAVFileWriter(std::string& filename, int sample_rate, int num_samples) : 

@@ -1,4 +1,6 @@
 #include "SoundProcessor.h"
+#include "WAVFileWriter.h"
+
 #include <memory>  // Для std::unique_ptr
 
 SoundProcessor::SoundProcessor(const std::string& output_file, const std::vector<std::string>& input_files, const std::string& config_file)
@@ -18,7 +20,7 @@ void SoundProcessor::MainProcess() {
     }
 
     // 2 Parsing configuration file and ctreate converters
-    ConfigParser parser(config_file);
+    ConfigParser parser(config_file, input_files);
     parser.Parse(); // read line by line and create required converters
     const std::vector<std::unique_ptr<Converter>>& converters = parser.GetConverters();
     // const auto& converters = parser.GetConverters();
@@ -26,7 +28,7 @@ void SoundProcessor::MainProcess() {
     // 3 Apply converters
     std::vector<int16_t> output = input_streams[0]; // first input WAV file - the output of the first converter
     for (const auto& converter : converters) {
-        output = converter->Convert(output);
+        output = converter->Convert(output); // apply converters to same output, one by one, changing output
     }
 
     WAVFileWriter writer(output_file, sample_rate, num_samples);

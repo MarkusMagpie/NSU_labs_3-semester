@@ -1,7 +1,5 @@
 #pragma once
 
-#include "WAVFileReader.h"
-#include "WAVFileWriter.h"
 #include "ConfigParser.h"
 
 #include <vector>

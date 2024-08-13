@@ -1,0 +1,14 @@
+HOW TO USE SOUND PROCESSOR
+Options:
+    -h: Show this message, exit
+Converters:
+    mute <start> <end>
+        Description: mutes audio between start and finish
+        Parameters:
+            start: start mute time in seconds
+            end: end mute time in seconds
+    mix <file> <start>
+        Description: mixes audio from specified file with original input file starting from "start" 
+        Parameters:
+            file: path to WAV file to be mixed
+            dtart: start mixing time in seconds

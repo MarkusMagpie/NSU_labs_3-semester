@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <cstdint>
 #include "Converter.h"
 
 class MixConverter : public Converter {
@@ -13,7 +11,6 @@ public:
 
     // Метод convert смешивает основной поток с дополнительным
     std::vector<int16_t> Convert(const std::vector<int16_t>& input) override;
-
 private:
     const std::vector<int16_t>& second_stream; // Ссылка на дополнительный поток
     double insert_time;   // Время начала смешивания в секундах

@@ -3,8 +3,8 @@
 #include <fstream> 
 #include <sstream> // for std::istringstream
 
-ConfigParser::ConfigParser(const std::string& config_file) : 
-    config_file(config_file), sample_rate(44100) {}
+ConfigParser::ConfigParser(const std::string& config_file, const std::vector<std::string>& input_files) : 
+    config_file(config_file), input_files(input_files), sample_rate(44100) {}
 
 void ConfigParser::Parse() {
     std::ifstream file(config_file);
@@ -53,18 +53,45 @@ std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line
             return std::make_unique<MuteConverter>(start_time, end_time, sample_rate);
         }
     } else if (command == "mix") {
-        std::string file_path;
+        std::string input_file_ref;
         double insert_time;
-        if (stream >> file_path >> insert_time) {
-            std::vector<int16_t> second_stream = LoadStreamFromFile(file_path);
-            return std::make_unique<MixConverter>(second_stream, insert_time, sample_rate);
+        if (stream >> input_file_ref >> insert_time) {
+            int input_file_index = ParseInputFileReference(input_file_ref);
+            if (input_file_index != -1) {
+                std::vector<int16_t> second_stream = LoadStreamFromFile(input_file_index);
+                return std::make_unique<MixConverter>(second_stream, insert_time, sample_rate);
+            } else {
+                throw std::runtime_error("Invalid input file reference: " + input_file_ref);
+            }
         }
     }
 
     return nullptr;
 }
 
-std::vector<int16_t> ConfigParser::LoadStreamFromFile(const std::string& file_name) {
+int ConfigParser::ParseInputFileReference(const std::string& ref) {
+    if (ref.size() > 1 && ref[0] == '$') {
+        std::string number = ref.substr(1);
+        for (char c : number) {
+            if (!std::isdigit(c)) {
+                return -1;
+            }
+        }
+        int index = std::stoi(number);
+        if (index >= 1 && index <= input_files.size()) {
+            return index - 1;
+        }
+    }
+
+    return -1;
+}
+
+std::vector<int16_t> ConfigParser::LoadStreamFromFile(int file_index) {
+    if (file_index < 0 || file_index >= input_files.size()) {
+        throw std::runtime_error("Input file index out of range (given wrong value): " + std::to_string(file_index));
+    }
+
+    const std::string& file_name = input_files[file_index];
     WAVFileReader reader(file_name);
     return reader.ReadSamples();
 }
