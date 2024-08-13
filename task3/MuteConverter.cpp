@@ -11,19 +11,18 @@ std::vector<int16_t> MuteConverter::Convert(const std::vector<int16_t>& input) {
     // }
     // return output;
 
-    // 1 count starting and ending sample indexes for mute
     auto start = static_cast<size_t>(start_time * sample_rate);
     auto end = static_cast<size_t>(end_time * sample_rate);
 
-    // 2 create output vector
     std::vector<int16_t> output (input);
+
+    if (start >= output.size()) return output;
+    if (end > output.size()) end = output.size(); // to avoid index out of range
+
+    for (size_t i = start; i < end; ++i) {
+        output[i] = 0;
+    }
     
-    // 2.1 check bounds of start and end indexes
-    start = std::min(start, output.size());
-    end = std::min(end, output.size());
-    
-    // 3 set mute
-    std::fill(output.begin() + start, output.begin() + end, 0);
     return output;
     
 }
