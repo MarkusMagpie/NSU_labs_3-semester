@@ -1,10 +1,14 @@
 #pragma once
 
 #include "Converter.h"
+#include "MixConverter.h"
+#include "MuteConverter.h"
+#include "WAVFileReader.h" // for LoadStreamFromFile
+
 #include <string>
 #include <vector>
 #include <memory> // for std::unique_ptr
-#include <stdexcept>
+#include <stdexcept> // for std::runtime_error
 
 // Класс для разбора конфигурационного файла и создания конвертеров
 class ConfigParser {

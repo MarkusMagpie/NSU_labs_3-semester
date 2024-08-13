@@ -1,10 +1,6 @@
 #include "ConfigParser.h"
-#include "MixConverter.h"
-#include "MuteConverter.h"
 
-#include "WAVFileReader.h"
-
-#include <fstream>
+#include <fstream> 
 #include <sstream> // for std::istringstream
 
 ConfigParser::ConfigParser(const std::string& config_file) : 
