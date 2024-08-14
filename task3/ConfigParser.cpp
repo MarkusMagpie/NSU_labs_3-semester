@@ -2,6 +2,7 @@
 
 #include <fstream> 
 #include <sstream> // for std::istringstream
+#include <iostream>
 
 ConfigParser::ConfigParser(const std::string& config_file, const std::vector<std::string>& input_files) : 
     config_file(config_file), input_files(input_files), sample_rate(44100) {}
@@ -50,6 +51,7 @@ std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line
     if (command == "mute") {
         double start_time, end_time;
         if (stream >> start_time >> end_time) {
+            std::cout << "Converter: mute " << start_time << " " << end_time << std::endl; // for testing
             return std::make_unique<MuteConverter>(start_time, end_time, sample_rate);
         }
     } else if (command == "mix") {
@@ -59,6 +61,7 @@ std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line
             int input_file_index = ParseInputFileReference(input_file_ref);
             if (input_file_index != -1) {
                 std::vector<int16_t> second_stream = LoadStreamFromFile(input_file_index);
+                std::cout << "Converter: mix " << input_file_ref << " " << insert_time << std::endl; // for testing
                 return std::make_unique<MixConverter>(second_stream, insert_time, sample_rate);
             } else {
                 throw std::runtime_error("Invalid input file reference: " + input_file_ref);
