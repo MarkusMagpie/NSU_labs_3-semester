@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     try {
         SoundProcessor processor(output_file, input_files, config_file);
         processor.MainProcess();
-        std::cout << "Processing of reading input WAV files, conversion and writing completed successfully" << std::endl;
+        std::cout << "\nProcessing of reading input WAV files, conversion and writing completed successfully" << std::endl;
         std::cout << "Output WAV file: " << output_file << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl; // no idea what else to check so TODO

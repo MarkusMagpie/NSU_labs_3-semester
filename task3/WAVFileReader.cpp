@@ -22,11 +22,6 @@ void WAVFileReader::ReadHeader() {
         throw std::runtime_error("Failed to read WAV header from file");
     }
 
-    // if (std::string(header.riffHeader, 4) != "RIFF") throw std::runtime_error("Invalid WAV file's Riff header");
-    // if (std::string(header.waveHeader, 4) != "WAVE") throw std::runtime_error("Invalid WAV file's Wave header");
-    // if (std::string(header.fmtHeader, 4) != "fmt ") throw std::runtime_error("Invalid WAV file's Fmt header");
-    // if (std::string(header.dataHeader, 4) != "data") throw std::runtime_error("Invalid WAV file's data header: " + std::string(header.dataHeader, 4));
-
     if (header.audioFormat != 1 ||
         header.numChannels != 1 ||
         header.bitsPerSample != 16) {

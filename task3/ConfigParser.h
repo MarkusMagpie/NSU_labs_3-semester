@@ -20,7 +20,6 @@ private:
 public:
     ConfigParser(const std::string& config_file, const std::vector<std::string>& input_files);
     void Parse(); // method to parse config file by parsing line by line
-    std::string ReadLine(std::ifstream& file);
 
     std::unique_ptr<Converter> CreateConverter(const std::string& line);
     int ParseInputFileReference(const std::string& ref);

@@ -25,15 +25,20 @@ void SoundProcessor::MainProcess() {
     ConfigParser parser(config_file, input_files);
     parser.Parse(); // read line by line and create required converters
     const std::vector<std::unique_ptr<Converter>>& converters = parser.GetConverters();
-    // const auto& converters = parser.GetConverters();
 
     // 3 Apply converters
     std::vector<int16_t> processed_samples;
     std::vector<int16_t> output = input_streams[0]; // first input WAV file - the output of the first converter
     for (const std::unique_ptr<Converter>& converter : converters) {
         processed_samples = converter->Convert(output);
-        std::cout << "Processed samples: " << processed_samples.size() << "\n" << std::endl;
-        output = converter->Convert(output); // apply converters to same output, one by one, changing output
+
+        std::cout << "Processed samples: ";
+        for (const auto& sample : processed_samples) {
+            std::cout << sample << " ";
+        }
+        std::cout << std::endl;
+
+        output = processed_samples; // apply converters to same output, one by one, changing output
     }
     
     WAVFileWriter writer(output_file, sample_rate, num_samples);

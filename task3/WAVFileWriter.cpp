@@ -39,11 +39,12 @@ void WAVFileWriter::WriteHeader() {
 }
 
 void WAVFileWriter::WriteSamples(std::vector<int16_t>& samples) {
-    if (samples.size() != static_cast<size_t>(num_samples)) {
-        throw std::runtime_error("Number of samples does not match the expected count.");
-    }
+    // if (samples.size() != static_cast<size_t>(num_samples)) {
+    //     throw std::runtime_error("Number of samples does not match the expected count.");
+    // }
     
     output.write(reinterpret_cast<char*>(samples.data()), samples.size() * sizeof(int16_t));
+    
     if (!output) {
         throw std::runtime_error("Failed to write WAV samples to file.");
     }

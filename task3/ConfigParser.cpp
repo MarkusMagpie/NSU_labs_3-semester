@@ -17,30 +17,21 @@ void ConfigParser::Parse() {
     std::unique_ptr<Converter> converter;
 
     while (std::getline(file, line)) {
-        line = ReadLine(file);
-        if (!line.empty()) {
-            converter = CreateConverter(line);
-            if (converter) {
-                converters.push_back(std::move(converter));
-            } else {
-                throw std::runtime_error("Unknown config line: " + line);
-            }
-        } 
-    }
-}
-
-std::string ConfigParser::ReadLine(std::ifstream& file) {
-    std::string line;
-    if (std::getline(file, line)) {
+        // std::cout << "Line: " << line << std::endl;
         line.erase(0, line.find_first_not_of(" \t")); // remove leading whitespace (if any)
         line.erase(line.find_last_not_of(" \t") + 1); // remove trailing whitespace (if any)
 
         if (line.empty() || line[0] == '#') {
-            return "";
+            continue; // skip empty lines or comments
         }
-    }
 
-    return line;
+        converter = CreateConverter(line);
+        if (converter) {
+            converters.push_back(std::move(converter));
+        } else {
+            throw std::runtime_error("Unknown config line: " + line);
+        } 
+    }
 }
 
 std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line) {
