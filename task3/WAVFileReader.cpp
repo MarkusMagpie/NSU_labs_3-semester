@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+// заметка: If the file can be created in a regular path, the exception won’t be thrown, and the test will fail 
 WAVFileReader::WAVFileReader(const std::string& filename) :
     input(filename, std::ios::binary) 
     {

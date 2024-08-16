@@ -3,15 +3,16 @@
 #include <iostream>
 
 WAVFileWriter::WAVFileWriter(std::string& filename, int sample_rate, int num_samples) : 
-    output(filename, std::ios::binary) {
-    if (!output.is_open()) {
-        throw std::runtime_error("Failed to open WAV file for writing: " + filename);
-    }
-    
-    this->sample_rate = sample_rate;
-    this->num_samples = num_samples;
+    output(filename, std::ios::binary) 
+    {
+        if (!output.is_open()) {
+            throw std::runtime_error("Failed to open WAV file for writing: " + filename);
+        }
+        
+        this->sample_rate = sample_rate;
+        this->num_samples = num_samples;
 
-    WriteHeader();
+        WriteHeader();
 }
 
 void WAVFileWriter::WriteHeader() {

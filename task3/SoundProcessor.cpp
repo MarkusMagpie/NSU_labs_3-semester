@@ -50,6 +50,8 @@ void SoundProcessor::MainProcess() {
 
     std::cout << "\nAmount of processed samples: " << processed_samples.size() << std::endl;
     
+    // 4 Save output WAV file
+    std::cout << "\n-----4 SAVE OUTPUT WAV FILE-----" << std::endl;
     WAVFileWriter writer(output_file, sample_rate, num_samples);
     writer.WriteSamples(output); // write converted samples to output WAV file
 }
