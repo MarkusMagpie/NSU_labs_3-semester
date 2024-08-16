@@ -44,3 +44,6 @@ https://ravesli.com/urok-167-virtualnye-tablitsy/
 
 Запуск программы:
 ./audio_processor testfiles/config.txt testfiles/output.wav testfiles/input1.wav testfiles/input2.wav
+
+GOOGLE TEST COMPILER:
+g++ -std=c++14 t_SoundProcessor.cpp ConfigParser.cpp MuteConverter.cpp MixConverter.cpp WAVFileReader.cpp WAVFileWriter.cpp -lgtest -lgtest_main -pthread -o SoundTester

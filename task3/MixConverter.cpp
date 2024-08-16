@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <iostream>
+
 //Task - take main stream and second sctream, start mixing starting from insert_time
 MixConverter::MixConverter(const std::vector<int16_t>& second_stream, double insert_time, int sample_rate)
     : second_stream(second_stream), insert_time(insert_time), sample_rate(sample_rate) {}
@@ -18,10 +20,16 @@ std::vector<int16_t> MixConverter::Convert(const std::vector<int16_t>& input) {
     size_t main_stream_len = input.size();
     size_t second_stream_len = second_stream.size();
 
-    if (insert_sample_index >= main_stream_len) return output; // case if nothing to mix
+    std::cout << "\nSTART MIXING" << std::endl;
+    std::cout << "Mix samples starting from " << insert_time << " seconds" << std::endl;
+
+    if (insert_sample_index >= main_stream_len) {
+        std::cout << "insert_sample_index >= main_stream_len" << std::endl;
+        return output; // case if nothing to mix
+    }
 
     // iterating over samples from insertion point to the end of the main stream
-    // ! If second stream is shorter than main stream, then for indexes bigger then length of second stream, we will get Segmentation fault
+    // ! If second stream is shorter than main stream, then for indexes bigger then length of second stream, we will get Segmentation fault  
 
     for (size_t i = insert_sample_index; i < main_stream_len; ++i) {
         if (i - insert_sample_index < second_stream_len) {
@@ -29,6 +37,8 @@ std::vector<int16_t> MixConverter::Convert(const std::vector<int16_t>& input) {
             output[i] = static_cast<int16_t>(average_value);
         }
     }
+
+    std::cout << "END MIXING" << std::endl;
 
     return output;
 }

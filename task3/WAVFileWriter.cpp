@@ -1,5 +1,7 @@
 #include "WAVFileWriter.h"
 
+#include <iostream>
+
 WAVFileWriter::WAVFileWriter(std::string& filename, int sample_rate, int num_samples) : 
     output(filename, std::ios::binary) {
     if (!output.is_open()) {
@@ -39,9 +41,12 @@ void WAVFileWriter::WriteHeader() {
 }
 
 void WAVFileWriter::WriteSamples(std::vector<int16_t>& samples) {
-    // if (samples.size() != static_cast<size_t>(num_samples)) {
-    //     throw std::runtime_error("Number of samples does not match the expected count.");
-    // }
+    if (samples.size() != static_cast<size_t>(num_samples)) {
+        std::cout << "Expected " << num_samples << " samples, but got " << samples.size() << " samples." << std::endl;
+        throw std::runtime_error("Number of samples does not match the expected count.");
+    }
+
+    // std::cout << "Amount of samples to write: " << samples.size() << std::endl;
     
     output.write(reinterpret_cast<char*>(samples.data()), samples.size() * sizeof(int16_t));
     

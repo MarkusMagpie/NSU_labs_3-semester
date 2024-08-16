@@ -1,5 +1,7 @@
 #include "WAVFileReader.h"
 
+#include <iostream>
+
 WAVFileReader::WAVFileReader(const std::string& filename) :
     input(filename, std::ios::binary) 
     {
@@ -18,6 +20,7 @@ void WAVFileReader::ReadHeader() {
     
     // read header
     input.read(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
+    
     if (!input) {
         throw std::runtime_error("Failed to read WAV header from file");
     }
@@ -29,7 +32,7 @@ void WAVFileReader::ReadHeader() {
     }
 
     sample_rate = header.sample_rate;
-    num_samples = header.dataSize / (header.bitsPerSample / 8); // всего байтов / байтов на 1 сэмпл
+    num_samples = header.dataSize / (header.bitsPerSample / (8 * header.numChannels)) * sample_rate; // всего байтов / байтов на 1 сэмпл * частота
 }
 
 std::vector<int16_t> WAVFileReader::ReadSamples() {
@@ -38,6 +41,8 @@ std::vector<int16_t> WAVFileReader::ReadSamples() {
     // reinterpret_cast<char*>(samples.data()) - преобразование int16_t* указателя на первый элемент вектора samples в указатель char*
     // num_samples * sizeof(int16_t) - общее количество байт всех сэмплов в векторе
     input.read(reinterpret_cast<char*>(samples.data()), num_samples * sizeof(int16_t));
+
+    std::cout << "Amount of read samples: " << num_samples << std::endl;
     
     if (!input) {
         throw std::runtime_error("Failed to read WAV samples from file");
