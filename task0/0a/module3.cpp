@@ -1,6 +1,6 @@
 #include "module3.h"
 
-namespace Module2
+namespace Module3
 {
 	std::string getMyName()
 	{

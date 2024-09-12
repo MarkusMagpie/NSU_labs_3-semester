@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
+
 #include <string>
 #include <vector> // for dynamic arrays
 #include <map>
@@ -8,12 +8,15 @@
 #include <algorithm> // for sorting
 #include <iomanip> // for output formatting
 
+#include <clocale>
+
 // I extract words from line in this function and return a vector of words
 std::vector<std::string> ExtractWords(std::string& line) {
+    std::string russian_letters = "абвгдежзийклмнопрстуфхцчшщъыьэюя";
     std::vector<std::string> words;
     std::string word; // element of vector, later will be added to vector
     for (char c: line) {
-        if (isalnum(c)) {
+        if (isalnum(c) || russian_letters.find(tolower(c)) != std::string::npos) {
             word += tolower(c);
         } else {
             if (!word.empty()) { // if separator found, add word to vector
@@ -39,6 +42,7 @@ std::vector<std::string> ExtractWords(std::string& line) {
 // char* argv[] - массив с указателями на строки с аргументами командной строки
 
 int main(int argc, char *argv[]) {
+    setlocale(LC_ALL, "ru_RU.cp1251");
     if (argc != 3) { // check number of arguments
         std::cerr << "Error: Wrong number of arguments" << std::endl;
         return 0;

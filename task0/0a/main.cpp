@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	std::cout << Module2::getMyName() << "\n";
 
 	// using namespace Module2; // (B)
-	// std::cout << getMyName() << "\n"; // COMPILATION ERROR (C)
+	// std::cout << Module2::getMyName() << "\n"; // COMPILATION ERROR (C)
 
 	using Module2::getMyName;
 	std::cout << getMyName() << "\n"; // (D)
@@ -38,10 +38,23 @@ int main(int argc, char** argv)
 // что мы используем объект getMyName из пространства имен Module2.
 
 // 4
-// при компилировании строки C, получаем ошибку: error: call to 'getMyName' is ambiguous
+// при компилировании строки C, получаем ошибку: error: call of overloaded 'getMyName' is ambiguous
 // Имеем несколько функций (2) с одинаковым названием: getMyName. 
 // Для решения проблемы "двусмысленности", конкретизируем из какого пр-ва имен берем функцию:
     // std::cout << Module2::getMyName() << "\n";
+// Возвращенная компилятором ошибка: 
+// main.cpp: In function ‘int main(int, char**)’:
+// main.cpp:19:31: error: call of overloaded ‘getMyName()’ is ambiguous
+//    19 |         std::cout << getMyName() << "\n"; // COMPILATION ERROR (C)
+//       |                      ~~~~~~~~~^~
+// In file included from main.cpp:2:
+// module2.h:5:21: note: candidate: ‘std::string Module2::getMyName()’
+//     5 |         std::string getMyName();
+//       |                     ^~~~~~~~~
+// In file included from main.cpp:1:
+// module1.h:5:21: note: candidate: ‘std::string Module1::getMyName()’
+//     5 |         std::string getMyName();
+//       |                     ^~~~~~~~~
 
 // 5
 // Могли во всех header файлах объявить один namespace, в каждом файле написать свою функцию.
