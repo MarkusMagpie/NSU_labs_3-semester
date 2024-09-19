@@ -43,7 +43,8 @@ CircularBuffer::CircularBuffer(int capacity, const value_type &elem) :
 {
     std::fill(buffer, buffer + capacity, elem);
 }
-// 2 access methods. Not checking for index out of range
+
+// 2 access methods via operator[] overloading
 value_type &CircularBuffer::operator[](int i) {
     if (i < 0 || i >= buffer_size) {
         throw std::invalid_argument("Error: index out of range");
@@ -73,14 +74,15 @@ value_type &CircularBuffer::at(int i) {
     if (i < 0 || i >= buffer_size) {
         throw std::invalid_argument("Error: index out of range");
     }
-    return (*this)[i];
+
+    return buffer[(head + i) % buffer_capacity];
 }
 
 const value_type &CircularBuffer::at(int i) const {
     if (i < 0 || i >= buffer_size) {
         throw std::invalid_argument("Error: index out of range");
     }
-    return (*this)[i];
+    return buffer[(head + i) % buffer_capacity];
 }
 
 // 4 methods for getting first and last elements
@@ -130,21 +132,26 @@ value_type * CircularBuffer::linearize() {
     return buffer;
 }
 
-// Check if the buffer is linearized
+// true, if the buffer is linearized
 bool CircularBuffer::is_linearized() const {
     bool linear = (head == 0 && (tail >= head || buffer_size == 0));
     std::cout << "is_linearized: head=" << head << " tail=" << tail << " buffer_size=" << buffer_size << " linear=" << linear << std::endl;
     return linear;
 }
 
+// move the ring buffer so that element with index new_begin is at 0 index
 void CircularBuffer::rotate(int new_begin) {
-    if (new_begin < 0 || new_begin >= buffer_capacity) {
+    if (buffer_capacity == 0) {
+        throw std::logic_error("Error: buffer is empty");
+    }
+
+    if (new_begin < 0 || new_begin >= buffer_size) {
         throw std::invalid_argument("Error: index out of range");
     }
 
     value_type *new_buffer = new value_type[buffer_capacity];
     for (int i = 0; i < buffer_size; i++) {
-        new_buffer[i] = (*this)[(i + new_begin) % buffer_capacity];
+        new_buffer[i] = (*this)[(i + new_begin) % buffer_size];
     }
 
     std::swap(buffer, new_buffer);
@@ -248,6 +255,7 @@ void CircularBuffer::push_front(const value_type & item) {
 
     // to ensure proper position of new element:
     // move the head pointer to the new position before placing the new element there
+    // + buffer_capacity if the head pointer is at the end of the buffer
     head = (head - 1 + buffer_capacity) % buffer_capacity;
     buffer[head] = item;
 }
@@ -272,43 +280,43 @@ void CircularBuffer::pop_front() {
 }
 
 void CircularBuffer::insert(int pos, const value_type & item) {
-    // check if index argument is valid
     if (pos < 0 || pos > buffer_size) {
         throw std::invalid_argument("Error: index out of range");   // or out_of_range
     }
 
-    // check if buffer is full
     if (full()) {
         throw std::overflow_error("Error: buffer is full");
     }
-
+    
     int pos_in_buffer = (head + pos) % buffer_capacity;
 
-    // shift is required because we need to make space for a new element,
-    // while maintaining the order of existing elements
-
-    // EXAMPLE: char array ['a', 'b', 'c', 'd']. Need to insert 'x' on index 2 => move 'c' and 'd' to the right
-    // RESULT: ['a', 'b', 'x', 'c', 'd']
+    // shift is required because we need to make space for a new element while maintaining the order of existing elements
     if (pos < buffer_size / 2) {
-        // shift elements from head to pos_in_buffer to the left
-        for (int i = 0; i < pos; i++) {
+        for (int i = buffer_size - 1; i >= pos; --i) {
             int from = (head + i) % buffer_capacity;
-            int to = (head + i - 1 + buffer_capacity) % buffer_capacity; // '+ buffer_capacity' to avoid negative result
+            int to = (head + i + 1) % buffer_capacity;
             buffer[to] = buffer[from];
         }
-        head = (head - 1 + buffer_capacity) % buffer_capacity;
+        // head = (head - 1 + buffer_capacity) % buffer_capacity;
+        tail = (tail + 1) % buffer_capacity;
     } else {
-        // shift elements from pos_in_buffer to tail to the right
-        for (int i = buffer_size; i > pos; i--) {
-            int from = (head + i - 1) % buffer_capacity;
-            int to = (head + i) % buffer_capacity;
+        for (int i = pos; i < buffer_size; ++i) {
+            int from = (head + i) % buffer_capacity;
+            int to = (head + i + 1) % buffer_capacity;
             buffer[to] = buffer[from];
         }
         tail = (tail + 1) % buffer_capacity;
+        // head = (head - 1 + buffer_capacity) % buffer_capacity;
     }
 
     buffer[pos_in_buffer] = item;
     buffer_size++;
+
+    std::cout << "finished loop, final buffer:" << std::endl;
+    for (int i = 0; i < buffer_size; i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
 }
 
 void CircularBuffer::erase(int first, int last) {
@@ -341,6 +349,7 @@ void CircularBuffer::erase(int first, int last) {
     }
 
     buffer_size -= cnt;
+    tail = (tail + cnt) % buffer_capacity;
 }
 
 // clear buffer (erase all elements) method
@@ -361,6 +370,7 @@ bool operator==(const CircularBuffer & a, const CircularBuffer & b) {
             return false;
         }
     }
+
     return true;
 }
 

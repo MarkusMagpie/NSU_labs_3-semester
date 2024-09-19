@@ -102,6 +102,8 @@ TEST_F(CircularBufferTest, LinearizeTest) {
     EXPECT_EQ(*(ptr + 2), 'C');   
 }
 
+// add 2 linarization tests
+
 // Buffer is linear if there is no wrapped elements (head is at start). 
 // So, we make it non-linear by making head = 1!
 TEST_F(CircularBufferTest, IsLinearizedTest) {
@@ -132,7 +134,11 @@ TEST_F(CircularBufferTest, IsLinearizedTest) {
     std::cout << std::endl;
 }
 
-TEST_F(CircularBufferTest, RotateTest) {
+TEST_F(CircularBufferTest, RotateTest0) {
+    EXPECT_THROW(buffer.rotate(0), std::logic_error);
+}
+
+TEST_F(CircularBufferTest, RotateTest1) {
     buffer.set_capacity(4);
 
     buffer.push_back('A');
@@ -144,6 +150,33 @@ TEST_F(CircularBufferTest, RotateTest) {
 
     EXPECT_EQ(buffer.front(), 'C');
     EXPECT_EQ(buffer.back(), 'B');
+}
+
+TEST_F(CircularBufferTest, RotateTest2) {
+    buffer.set_capacity(10);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+    buffer.push_back('D');
+    buffer.push_back('E');
+
+    buffer.rotate(2);
+
+    EXPECT_EQ(buffer.front(), 'C');
+    EXPECT_EQ(buffer.back(), 'B');
+}
+
+TEST_F(CircularBufferTest, RotateTest3) {
+    buffer.set_capacity(10);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+    buffer.push_back('D');
+    buffer.push_back('E');
+
+    EXPECT_THROW(buffer.rotate(5), std::logic_error);
 }
 
 TEST_F(CircularBufferTest, SizeTest) {
@@ -217,7 +250,6 @@ TEST_F(CircularBufferTest, ResizeTest) {
     EXPECT_EQ(buffer.size(), 2);
 }
 
-// Test cases for operator= method
 TEST_F(CircularBufferTest, AssignOperatorTest) {
     CircularBuffer buffer1(3);
     buffer1.push_back('A');
@@ -307,7 +339,17 @@ TEST_F(CircularBufferTest, PopFrontTest) {
     EXPECT_EQ(buffer.back(), 'B');
 }
 
-TEST_F(CircularBufferTest, InsertTest) {
+TEST_F(CircularBufferTest, InsertTest0) {
+    buffer.set_capacity(3);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+
+    EXPECT_THROW(buffer.insert(2, 'D'), std::overflow_error);
+}
+
+TEST_F(CircularBufferTest, InsertTest1) {
     buffer.set_capacity(3);
 
     buffer.push_back('A');
@@ -315,13 +357,73 @@ TEST_F(CircularBufferTest, InsertTest) {
 
     buffer.insert(1, 'B');
 
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
     EXPECT_EQ(buffer.size(), 3);
     EXPECT_EQ(buffer.front(), 'A');
     EXPECT_EQ(buffer.at(1), 'B');
     EXPECT_EQ(buffer.back(), 'C');
 }
 
-TEST_F(CircularBufferTest, EraseTest) {
+TEST_F(CircularBufferTest, InsertTest2) {
+    buffer.set_capacity(9);
+
+    buffer.push_back('D');
+
+    buffer.push_back('O');
+    buffer.push_back('O');
+    buffer.push_back('O');
+    buffer.push_back('O');
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+
+    EXPECT_EQ(buffer.size(), 8);
+    EXPECT_EQ(buffer.front(), 'D');
+    EXPECT_EQ(buffer[5], 'A');
+    EXPECT_EQ(buffer[6], 'B');
+    EXPECT_EQ(buffer.back(), 'C');
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    buffer.insert(2, 'E');
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    EXPECT_EQ(buffer.size(), 9);
+    EXPECT_EQ(buffer.front(), 'D');
+    EXPECT_EQ(buffer[2], 'E');
+    EXPECT_EQ(buffer[6], 'A');
+    EXPECT_EQ(buffer[7], 'B');
+    EXPECT_EQ(buffer.back(), 'C');
+}
+
+TEST_F(CircularBufferTest, InsertTest3) {
+    buffer.set_capacity(5);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+    buffer.push_back('D');
+
+    buffer.insert(4, 'E');
+
+    EXPECT_EQ(buffer.size(), 5);
+    EXPECT_EQ(buffer.front(), 'A');
+    EXPECT_EQ(buffer.back(), 'E');
+}
+
+TEST_F(CircularBufferTest, EraseTest1) {
     buffer.set_capacity(4);
 
     buffer.push_back('A');
@@ -329,11 +431,68 @@ TEST_F(CircularBufferTest, EraseTest) {
     buffer.push_back('C');
     buffer.push_back('D');
 
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
     buffer.erase(1, 3);     // elements erased: 'B', 'C'
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
 
     EXPECT_EQ(buffer.size(), 2);
     EXPECT_EQ(buffer.front(), 'A');
     EXPECT_EQ(buffer.back(), 'D');
+}
+
+TEST_F(CircularBufferTest, EraseTest2) {
+    buffer.set_capacity(4);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+    buffer.push_back('D');
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    buffer.erase(0, 2);     // elements erased: 'A', 'B'
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    EXPECT_EQ(buffer.size(), 2);
+    EXPECT_EQ(buffer.front(), 'C');
+    EXPECT_EQ(buffer.back(), 'D');
+}
+
+TEST_F(CircularBufferTest, EraseTest3) { // fix this test!
+    buffer.set_capacity(4);
+
+    buffer.push_back('A');
+    buffer.push_back('B');
+    buffer.push_back('C');
+    buffer.push_back('D');
+
+    for (int i = 0; i < buffer.size(); i++) {
+        std::cout << buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    buffer.erase(2, 4);     // elements erased: 'C', 'D'
+
+    std::cout << buffer[0] << " " << buffer[1] << std::endl;
+
+    EXPECT_EQ(buffer.size(), 2);
+    EXPECT_EQ(buffer.front(), 'A');
+    EXPECT_EQ(buffer.back(), 'B');
 }
 
 TEST_F(CircularBufferTest, ClearTest) {
