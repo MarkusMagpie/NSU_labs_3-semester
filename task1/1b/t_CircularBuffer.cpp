@@ -102,8 +102,6 @@ TEST_F(CircularBufferTest, LinearizeTest) {
     EXPECT_EQ(*(ptr + 2), 'C');   
 }
 
-// add 2 linarization tests
-
 // Buffer is linear if there is no wrapped elements (head is at start). 
 // So, we make it non-linear by making head = 1!
 TEST_F(CircularBufferTest, IsLinearizedTest) {
@@ -339,7 +337,7 @@ TEST_F(CircularBufferTest, PopFrontTest) {
     EXPECT_EQ(buffer.back(), 'B');
 }
 
-TEST_F(CircularBufferTest, InsertTest0) {
+TEST_F(CircularBufferTest, InsertTest0) { // new test case for exception handling
     buffer.set_capacity(3);
 
     buffer.push_back('A');
@@ -349,7 +347,7 @@ TEST_F(CircularBufferTest, InsertTest0) {
     EXPECT_THROW(buffer.insert(2, 'D'), std::overflow_error);
 }
 
-TEST_F(CircularBufferTest, InsertTest1) {
+TEST_F(CircularBufferTest, InsertTest1) { // old test case before hw 
     buffer.set_capacity(3);
 
     buffer.push_back('A');
@@ -368,7 +366,7 @@ TEST_F(CircularBufferTest, InsertTest1) {
     EXPECT_EQ(buffer.back(), 'C');
 }
 
-TEST_F(CircularBufferTest, InsertTest2) {
+TEST_F(CircularBufferTest, InsertTest2) { // hw test case
     buffer.set_capacity(9);
 
     buffer.push_back('D');
@@ -408,7 +406,7 @@ TEST_F(CircularBufferTest, InsertTest2) {
     EXPECT_EQ(buffer.back(), 'C');
 }
 
-TEST_F(CircularBufferTest, InsertTest3) {
+TEST_F(CircularBufferTest, InsertTest3) { // insert at the end test => no changes to original buffer
     buffer.set_capacity(5);
 
     buffer.push_back('A');
@@ -473,7 +471,7 @@ TEST_F(CircularBufferTest, EraseTest2) {
     EXPECT_EQ(buffer.back(), 'D');
 }
 
-TEST_F(CircularBufferTest, EraseTest3) { // fix this test!
+TEST_F(CircularBufferTest, EraseTest3) {
     buffer.set_capacity(4);
 
     buffer.push_back('A');

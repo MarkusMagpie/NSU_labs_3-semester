@@ -292,6 +292,7 @@ void CircularBuffer::insert(int pos, const value_type & item) {
 
     // shift is required because we need to make space for a new element while maintaining the order of existing elements
     if (pos < buffer_size / 2) {
+        // shift right
         for (int i = buffer_size - 1; i >= pos; --i) {
             int from = (head + i) % buffer_capacity;
             int to = (head + i + 1) % buffer_capacity;
@@ -306,7 +307,6 @@ void CircularBuffer::insert(int pos, const value_type & item) {
             buffer[to] = buffer[from];
         }
         tail = (tail + 1) % buffer_capacity;
-        // head = (head - 1 + buffer_capacity) % buffer_capacity;
     }
 
     buffer[pos_in_buffer] = item;
