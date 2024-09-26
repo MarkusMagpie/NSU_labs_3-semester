@@ -10,13 +10,11 @@ protected:
     CircularBuffer buffer;
 };
 
-// test case for default constructor; size and empty methods
 TEST_F(CircularBufferTest, ConstructorDefaultTest) {
     EXPECT_EQ(buffer.size(), 0);
     EXPECT_TRUE(buffer.empty());
 }
 
-// test case for copy constructor
 TEST_F(CircularBufferTest, CopyConstructor) {
     CircularBuffer buffer1(3);
     buffer1.push_back('A');
@@ -29,7 +27,6 @@ TEST_F(CircularBufferTest, CopyConstructor) {
     }
 }
 
-// test case for constructor with capacity (add tests for other private elements of the class)
 TEST_F(CircularBufferTest, ConstructorWithCapacity) {
     CircularBuffer a(5);
     
@@ -47,7 +44,7 @@ TEST_F(CircularBufferTest, ConstructorWithCapacityAndFillValue) {
     }
 }
 
-// Test cases for operator[] - operator[] overloading
+// Test cases for operator[] and at
 TEST_F(CircularBufferTest, OperatorBracketOverflow) {
     buffer.set_capacity(2);
 
@@ -181,10 +178,10 @@ TEST_F(CircularBufferTest, SizeTest) {
     buffer.set_capacity(1);
     EXPECT_EQ(buffer.size(), 0);
 
-    buffer.push_back('A');
+    buffer.push_back('A');          // buffer state: [A]; size = 1
     EXPECT_EQ(buffer.size(), 1);
 
-    buffer.pop_back();                         // of buffer.pop_front();  
+    buffer.pop_back();              // buffer state: [_]; size = 0
     EXPECT_EQ(buffer.size(), 0);
 }
 
@@ -236,7 +233,7 @@ TEST_F(CircularBufferTest, SetCapacityTest) {
 }
 
 TEST_F(CircularBufferTest, ResizeTest) {
-    buffer.set_capacity(3);         // size cannot exceed capacity
+    buffer.set_capacity(3); // size cannot exceed capacity
     buffer.resize(3, 'A');
     EXPECT_EQ(buffer.size(), 3);
 
@@ -261,7 +258,7 @@ TEST_F(CircularBufferTest, AssignOperatorTest) {
 }
 
 TEST_F(CircularBufferTest, SwapTest) {
-    // i will create 2 separate buffers and swap them
+    // create 2 separate buffers and swap them
     CircularBuffer buffer1(3);
     buffer1.push_back('A');
     buffer1.push_back('B');
@@ -337,7 +334,7 @@ TEST_F(CircularBufferTest, PopFrontTest) {
     EXPECT_EQ(buffer.back(), 'B');
 }
 
-TEST_F(CircularBufferTest, InsertTest0) { // new test case for exception handling
+TEST_F(CircularBufferTest, InsertTest0) { // test case for exception handling
     buffer.set_capacity(3);
 
     buffer.push_back('A');
@@ -347,7 +344,7 @@ TEST_F(CircularBufferTest, InsertTest0) { // new test case for exception handlin
     EXPECT_THROW(buffer.insert(2, 'D'), std::overflow_error);
 }
 
-TEST_F(CircularBufferTest, InsertTest1) { // old test case before hw 
+TEST_F(CircularBufferTest, InsertTest1) {
     buffer.set_capacity(3);
 
     buffer.push_back('A');
@@ -366,7 +363,7 @@ TEST_F(CircularBufferTest, InsertTest1) { // old test case before hw
     EXPECT_EQ(buffer.back(), 'C');
 }
 
-TEST_F(CircularBufferTest, InsertTest2) { // hw test case
+TEST_F(CircularBufferTest, InsertTest2) {
     buffer.set_capacity(9);
 
     buffer.push_back('D');
