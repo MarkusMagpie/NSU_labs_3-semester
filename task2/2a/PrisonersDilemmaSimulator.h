@@ -50,6 +50,7 @@ public:
         } else {
             std::cout << "-----FAST MODE-----" << std::endl;
         }
+
         if (strategies.size() != 3) {
             throw std::runtime_error("Number of strategies must be 3 for fast (or long) mode!");
         }
@@ -74,6 +75,7 @@ public:
 
     void RunDetailed() {
         std::cout << "-----DETAILED MODE-----" << std::endl;
+
         if (strategies.size() != 3) {
             throw std::runtime_error("Number of strategies must be 3 for detailed mode!");
         }
@@ -113,6 +115,7 @@ public:
 
     void RunTournament() {
         std::cout << "-----TOURNAMENT MODE-----" << std::endl;
+        
         if (strategies.size() < 3) {
             throw std::runtime_error("Number of strategies must be 3 or more for tournament mode!");
         }
@@ -304,7 +307,6 @@ public:
         }
         std::cout << std::endl;
 
-        // equal scores check
         int max_score = (tournament_scores.empty()) ? *std::max_element(scores.begin(), scores.end()) 
         : std::max_element(tournament_scores.begin(), tournament_scores.end(), 
         [](const auto& a, const auto& b) { return a.second < b.second; })->second;

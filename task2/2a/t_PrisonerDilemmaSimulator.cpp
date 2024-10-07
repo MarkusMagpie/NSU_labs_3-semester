@@ -1,20 +1,7 @@
 #include "gtest/gtest.h"
-#include "PrisonersDilemmaSimulator.h"
-#include "BaseStrategies.h"
-
-void RegisterBaseStrategies() {
-    auto base_strat1 = []() { return std::make_unique<PoorTrustingFool>(); };
-    auto base_strat2 = []() { return std::make_unique<AllDefect>(); };
-    auto base_strat3 = []() { return std::make_unique<Random>(); };
-    auto base_strat4 = []() { return std::make_unique<GoByMajority>(); };
-    auto base_strat5 = []() { return std::make_unique<TitForTat>(); };
-
-    StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", base_strat1);
-    StrategyFactory::GetInstance().RegisterStrategy("AllDefect", base_strat2);
-    StrategyFactory::GetInstance().RegisterStrategy("Random", base_strat3);
-    StrategyFactory::GetInstance().RegisterStrategy("GoByMajority", base_strat4);
-    StrategyFactory::GetInstance().RegisterStrategy("TitForTat", base_strat5);
-}
+// #include "PrisonersDilemmaSimulator.h"
+// #include "BaseStrategies.h"
+#include "main.h"
 
 // default constructor or SetUp() function to prepare the objects for each test
 // destructor or TearDown() function to release any resources you allocated in SetUp()
@@ -30,6 +17,56 @@ protected:
     std::string config_dir = "configs";
     std::string matrix_file = "default_matrix.txt";
 };
+
+TEST_F(PrisonersDilemmaSimulatorTest, MainExceptionTest) {
+    char* argv[] = { (char*)"name", (char*)"arg1", (char*)"arg2" };
+    int argc = 3;
+
+    EXPECT_THROW(CheckArguments(argc, argv), std::invalid_argument);
+
+    try {
+        CheckArguments(argc, argv);
+    } catch (const std::invalid_argument& e) {
+        EXPECT_STREQ(e.what(), "Error: not enough arguments passed to run any simulation mode");
+        std::cout << e.what() << std::endl;
+    } catch (...) {
+        FAIL(); // FAIL means that we don't expect any other exceptions =>  if catch any other exception, it's a fail
+    }
+}
+
+// 2 tests for long/fast exceptons
+// Number of strategies must be 3 for fast (or long) mode!
+TEST_F(PrisonersDilemmaSimulatorTest, FastExceptionTest) {
+    std::vector<std::string> strategies = { "AllDefect", "AllDefect" };
+    PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
+
+    try {
+        sim.Run();
+    } catch (const std::runtime_error& e) {
+        EXPECT_STREQ(e.what(), "Number of strategies must be 3 for fast (or long) mode!");
+        std::cout << e.what() << std::endl;
+    } catch (...) {
+        FAIL();
+    }
+
+    // EXPECT_THROW(sim.Run(), std::runtime_error);
+}
+
+TEST_F(PrisonersDilemmaSimulatorTest, LongExceptionTest) {
+    std::vector<std::string> strategies = { "AllDefect", "AllDefect", "AllDefect", "AllDefect" };
+    PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
+
+    try {
+        sim.Run();
+    } catch (const std::runtime_error& e) {
+        EXPECT_STREQ(e.what(), "Number of strategies must be 3 for fast (or long) mode!");
+        std::cout << e.what() << std::endl;
+    } catch (...) {
+        FAIL();
+    }
+
+    // EXPECT_THROW(sim.Run(true), std::runtime_error);
+}
 
 // 8 tests for all possible combinations of AllDefect and PoorTrustingFool
 TEST_F(PrisonersDilemmaSimulatorTest, PoorTrustingFoolTest) {
@@ -219,7 +256,7 @@ TEST_F(PrisonersDilemmaSimulatorTest, TitForTat3Test) {
 }
 
 // tests for tournament game mode
-TEST_F(PrisonersDilemmaSimulatorTest, TournamentFailTest) {
+TEST_F(PrisonersDilemmaSimulatorTest, TournamentExceptionTest) {
     std::vector<std::string> strategies = { "AllDefect", "PoorTrustingFool" };
     PrisonersDilemmaSimulator sim(strategies, 10, matrix_file, config_dir);
 
@@ -274,6 +311,13 @@ TEST_F(PrisonersDilemmaSimulatorTest, TournamentMixedStrategiesTest) {
 }
 
 // tests for detailed mode
+TEST_F(PrisonersDilemmaSimulatorTest, DetailedModeExceptionTest) {
+    std::vector<std::string> strategies = { "PoorTrustingFool", "TitForTat" }; // number of strategies must be precisely 3
+    PrisonersDilemmaSimulator sim(strategies, 5, matrix_file, config_dir);  
+
+    EXPECT_THROW(sim.RunDetailed(), std::runtime_error); 
+}
+
 TEST_F(PrisonersDilemmaSimulatorTest, DetailedModeQuitTest) {
     std::vector<std::string> strategies = { "PoorTrustingFool", "TitForTat", "AllDefect" };
     PrisonersDilemmaSimulator sim(strategies, 5, matrix_file, config_dir);
