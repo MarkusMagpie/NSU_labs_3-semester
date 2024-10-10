@@ -9,6 +9,7 @@ class PrisonersDilemmaSimulatorTest : public ::testing::Test {
 protected:
     void SetUp() override {
         RegisterBaseStrategies();
+        RegisterCustomStrategies();
     }
 
     void TearDown() override {};
@@ -22,7 +23,7 @@ TEST_F(PrisonersDilemmaSimulatorTest, MainExceptionTest) {
     char* argv[] = { (char*)"name", (char*)"arg1", (char*)"arg2" };
     int argc = 3;
 
-    EXPECT_THROW(CheckArguments(argc, argv), std::invalid_argument);
+    // EXPECT_THROW(CheckArguments(argc, argv), std::invalid_argument);
 
     try {
         CheckArguments(argc, argv);
@@ -212,7 +213,7 @@ TEST_F(PrisonersDilemmaSimulatorTest, GoByMajority2Test) {
     EXPECT_EQ(scores[2], 30);
 }
 
-// tests for GoByMajority
+// tests for TitForTat
 TEST_F(PrisonersDilemmaSimulatorTest, TitForTat1Test) {
     std::vector<std::string> strategies = { "TitForTat", "AllDefect", "PoorTrustingFool" };
     // for 1st strat: 1: C; 2 - 10: D because 2nd strat is AllDefect

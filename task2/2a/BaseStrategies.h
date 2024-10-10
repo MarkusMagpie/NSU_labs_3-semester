@@ -98,5 +98,3 @@ public:
         return opp1_history.back();
     }
 };
-
-// TODO - MAKE SETCONFIG AND GETNAME METHODS FOR ALL STRATEGIES

@@ -12,13 +12,14 @@ public:
     using StrategyCreator = std::function<std::unique_ptr<Strategy>()>;
 
     // return a reference to the static instance of factory (singleton)
+    // метод GetInstance возвращает ссылку на единственный экземпляр StrategyFactory
     // singleton - a class that has only one instance. This instance - is global point of access to this class
     static StrategyFactory& GetInstance() {
         static StrategyFactory instance;
         return instance;
     }
 
-    // registration of new strategies with name and creator
+    // registration of new strategies with name and creator (creator - function that returns a unique_ptr to a Strategy object)
     void RegisterStrategy(const std::string& name, StrategyCreator creator) {
         creators[name] = creator;
     }
@@ -41,3 +42,7 @@ private:
 // How to use? 
 // 1 call GetInstance() to get a reference to the static instance of StrategyFactory
 // 2 call RegisterStrategy() to register new strategy
+
+// Example:
+// std::function<std::unique_ptr<Strategy>()> base_strat1 = []() { return std::make_unique<PoorTrustingFool>(); };
+// StrategyFactory::GetInstance().RegisterStrategy("PoorTrustingFool", base_strat1);

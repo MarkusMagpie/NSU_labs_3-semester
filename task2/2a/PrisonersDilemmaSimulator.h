@@ -33,15 +33,9 @@ public:
         }
         // AFTER CREATING STRATEGIES ASSIGN DEFAULT VALUES FOR SCORES AND HISTORIES  
         Reset();
-        
-        if (config_dir.empty()) {
-            std::string base_config = "configs";
-            LoadStrategyConfigs(base_config);
-        } else {
-            LoadStrategyConfigs(config_dir);
-        }
 
-        LoadMatrix(matrix_file);
+        config_dir.empty() ? LoadStrategyConfigs("configs") : LoadStrategyConfigs(config_dir);
+        matrix_file.empty() ? LoadMatrix("default_matrix.txt") : LoadMatrix(matrix_file);
     }
 
     void Run(bool descriptions = false) {
