@@ -31,6 +31,8 @@ void ConfigParser::Parse() {
         } else {
             throw std::runtime_error("Unknown config line: " + line);
         } 
+
+        std::cout << "Created converter: " << line << std::endl;
     }
 }
 
