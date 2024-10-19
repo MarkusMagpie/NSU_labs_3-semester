@@ -7,7 +7,7 @@ WAVFileReader::WAVFileReader(const std::string& filename) :
     input(filename, std::ios::binary) 
     {
         if (!input.is_open()) {
-            throw std::runtime_error("FAILED TO OPEN WAV FILE for reading: " + filename);
+            throw std::runtime_error("Failed to open WAV file for reading: " + filename);
         }
 
         ReadHeader();
@@ -21,7 +21,6 @@ void WAVFileReader::ReadHeader() {
     
     // read header
     input.read(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
-    
     if (!input) {
         throw std::runtime_error("Failed to read WAV header from file");
     }
@@ -29,10 +28,12 @@ void WAVFileReader::ReadHeader() {
     if (header.audioFormat != 1 ||
         header.numChannels != 1 ||
         header.bitsPerSample != 16) {
-        throw std::runtime_error("Wrong WAV file format, must be PCM, 16-bit mono audio");
+        throw std::runtime_error("Wrong WAV file format: must be PCM, 16-bit and mono audio");
     }
 
     sample_rate = header.sample_rate;
+    // std::cout << "bitsPerSample: " << header.bitsPerSample << std::endl;
+    // std::cout << header.dataSize << std::endl;
     num_samples = header.dataSize / (header.bitsPerSample / (8 * header.numChannels)) * sample_rate; // всего байтов / байтов на 1 сэмпл * частота
 }
 
@@ -43,7 +44,7 @@ std::vector<int16_t> WAVFileReader::ReadSamples() {
     // num_samples * sizeof(int16_t) - общее количество байт всех сэмплов в векторе
     input.read(reinterpret_cast<char*>(samples.data()), num_samples * sizeof(int16_t));
 
-    std::cout << "Amount of read samples: " << num_samples << std::endl;
+    // std::cout << "Amount of read samples: " << num_samples << std::endl;
     
     if (!input) {
         throw std::runtime_error("Failed to read WAV samples from file");

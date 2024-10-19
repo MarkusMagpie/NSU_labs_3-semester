@@ -7,12 +7,6 @@ MuteConverter::MuteConverter(double start_time, double end_time, int sample_rate
 
 // converts all samples between start_time and end_time to 0
 std::vector<int16_t> MuteConverter::Convert(const std::vector<int16_t>& input) {
-    // std::vector<int16_t> output = input;
-    // for (int i = start_time; i < end_time && i < output.size(); ++i) {
-    //     output[i] = 0;
-    // }
-    // return output;
-
     auto start = static_cast<size_t>(start_time * sample_rate);
     auto end = static_cast<size_t>(end_time * sample_rate);
 

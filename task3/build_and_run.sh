@@ -16,4 +16,4 @@ g++ -c main.cpp -o main.o
 g++ main.o ConfigParser.o MuteConverter.o MixConverter.o SoundProcessor.o WAVFileReader.o WAVFileWriter.o -o audio_processor
 
 # Запуск программы с указанием файлов конфигурации, входных и выходного файлов
-./audio_processor testfiles/config.txt testfiles/output.wav testfiles/input3.wav testfiles/input4.wav
+./audio_processor testfiles/config.txt testfiles/output.wav testfiles/district_four.wav testfiles/funkorama.wav

@@ -24,7 +24,8 @@ void ConfigParser::Parse() {
             continue; // skip empty lines or comments
         }
 
-        converter = CreateConverter(line);
+        converter = CreateConverter(line); // создаю указатель на конвертер: MuteConverter или MixConverter
+        
         if (converter) {
             converters.push_back(std::move(converter));
         } else {
@@ -45,12 +46,19 @@ std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line
         }
     } else if (command == "mix") {
         std::string input_file_ref;
-        double insert_time;
-        if (stream >> input_file_ref >> insert_time) {
+        double start_time, end_time;
+        if (stream >> input_file_ref >> start_time >> end_time) {
             int input_file_index = ParseInputFileReference(input_file_ref);
             if (input_file_index != -1) {
-                std::vector<int16_t> second_stream = LoadStreamFromFile(input_file_index);
-                return std::make_unique<MixConverter>(second_stream, insert_time, sample_rate);
+                std::cout << "Encountered mix converter with reference: " << input_file_ref << std::endl;
+                std::vector<int16_t> second_sample_stream = LoadStreamFromFile(input_file_index);
+
+                std::cout << "\n" << "Second sample stream length: " << second_sample_stream.size() << std::endl;
+                std::cout << "Second sample stream start time: " << start_time << std::endl;
+                std::cout << "Second sample stream end time: " << end_time << std::endl;
+                std::cout << "Second sample stream sample rate: " << sample_rate << std::endl;
+
+                return std::make_unique<MixConverter>(second_sample_stream, start_time, end_time, sample_rate);
             } else {
                 throw std::runtime_error("Invalid input file reference: " + input_file_ref);
             }
@@ -83,8 +91,10 @@ std::vector<int16_t> ConfigParser::LoadStreamFromFile(int file_index) {
     }
 
     const std::string& file_name = input_files[file_index];
-    std::cout << "Using reader to get samples from file: " << file_name << std::endl;
+    // std::cout << "Using reader to get samples from file: " << file_name << std::endl;
     WAVFileReader reader(file_name);
+
+    // std::cout << "Successfully read " << reader.GetNumSamples() << " samples from file: " << file_name << std::endl;
     return reader.ReadSamples();
 }
 
