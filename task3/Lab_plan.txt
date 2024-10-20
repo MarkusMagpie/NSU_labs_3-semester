@@ -47,3 +47,22 @@ https://ravesli.com/urok-167-virtualnye-tablitsy/
 
 GOOGLE TEST COMPILER:
 g++ -std=c++14 t_SoundProcessor.cpp ConfigParser.cpp MuteConverter.cpp MixConverter.cpp WAVFileReader.cpp WAVFileWriter.cpp -lgtest -lgtest_main -pthread -o SoundTester
+
+GDB-проверка:
+g++ -g -c MuteConverter.cpp -o MuteConverter.o
+g++ -g -c MixConverter.cpp -o MixConverter.o
+
+g++ -g -c ConfigParser.cpp -o ConfigParser.o
+g++ -g -c SoundProcessor.cpp -o SoundProcessor.o
+
+g++ -g -c WAVFileReader.cpp -o WAVFileReader.o
+g++ -g -c WAVFileWriter.cpp -o WAVFileWriter.o
+
+g++ -g -c main.cpp -o main.o
+
+g++ -g MuteConverter.o MixConverter.o ConfigParser.o SoundProcessor.o WAVFileReader.o WAVFileWriter.o main.o -o audio_processor
+
+gdb ./audio_processor
+
+---внутри gdb---
+run testfiles/config.txt testfiles/output.wav testfiles/district_four.wav testfiles/funkorama.wav

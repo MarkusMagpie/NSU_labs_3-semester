@@ -44,6 +44,12 @@ void SoundProcessor::MainProcess() {
 
     std::cout << "START PROCESSING SAMPLES" << std::endl;
     for (const std::unique_ptr<Converter>& converter : converters) {
+        // if (dynamic_cast<MixConverter*>(converter.get())) {
+        //     output = dynamic_cast<MixConverter*>(converter.get())->Convert(output);
+        // } else if (dynamic_cast<MuteConverter*>(converter.get())) {
+        //     output = dynamic_cast<MuteConverter*>(converter.get())->Convert(output);
+        // }
+
         processed_samples = converter->Convert(output);
         output = processed_samples; // apply converters to same output, one by one, changing output
     }

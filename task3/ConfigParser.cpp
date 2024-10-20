@@ -65,6 +65,13 @@ std::unique_ptr<Converter> ConfigParser::CreateConverter(const std::string& line
                 throw std::runtime_error("Invalid input file reference: " + input_file_ref);
             }
         }
+    } else if (command == "amplify") {
+        double amplification_factor, start_time, end_time;
+        if (stream >> amplification_factor >> start_time >> end_time) {
+            return std::make_unique<AmplifyConverter>(amplification_factor, start_time, end_time, 44100);
+        }
+    } else {
+        throw std::runtime_error("Unknown command: " + command);
     }
 
     return nullptr;

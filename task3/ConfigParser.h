@@ -3,6 +3,8 @@
 #include "Converter.h"
 #include "MixConverter.h"
 #include "MuteConverter.h"
+#include "AmplifyConverter.h"
+
 #include "WAVFileReader.h" // for LoadStreamFromFile
 
 #include <string>
@@ -25,5 +27,5 @@ public:
     int ParseInputFileReference(const std::string& ref);
     
     std::vector<int16_t> LoadStreamFromFile(int file_index);
-    const std::vector<std::unique_ptr<Converter>>& GetConverters(); // getter
+    const std::vector<std::unique_ptr<Converter>>& GetConverters();
 };
