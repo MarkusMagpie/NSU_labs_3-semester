@@ -24,8 +24,6 @@ void WAVFileWriter::WriteHeader() {
     std::memcpy(header.fmtHeader, "fmt ", 4);
     std::memcpy(header.dataHeader, "data", 4);
     
-    // 36 байт - до начала данных - riffHeader + wavSize = 4 + 4 = 8. (44 - 8 = 36)
-    header.wavSize = 36 + num_samples * sizeof(int16_t); // 36 байт до начала данных + размер данных
     header.fmtChunkSize = 16;  // Размер fmt-чанка
     header.audioFormat = 1;    // PCM формат
     header.numChannels = 1;    // Моно звук
@@ -33,8 +31,10 @@ void WAVFileWriter::WriteHeader() {
     header.bitsPerSample = 16; // 16 бит на сэмпл
     header.byteRate = header.sample_rate * header.bitsPerSample * header.numChannels / 8;
     header.blockAlign = header.numChannels * header.bitsPerSample / 8;
-    header.dataSize = num_samples * sizeof(int16_t);  // Размер аудиоданных = число сэмплов * 16 бит на сэмпл
-    
+    header.dataSize = num_samples * header.bitsPerSample / 8;  // Размер аудиоданных = число сэмплов * 16 бит на сэмпл
+    // 36 байт - до начала данных - riffHeader + wavSize = 4 + 4 = 8. (44 - 8 = 36)
+    header.wavSize = 36 + header.dataSize; // 36 байт до начала данных + размер данных
+
     // Запись заголовка в файл
     output.write(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
     if (!output) {
@@ -44,13 +44,13 @@ void WAVFileWriter::WriteHeader() {
 
 void WAVFileWriter::WriteSamples(std::vector<int16_t>& samples) {
     if (samples.size() != static_cast<size_t>(num_samples)) {
-        std::cout << "Expected " << num_samples << " samples, but got " << samples.size() << " samples." << std::endl;
+        // std::cout << "Expected " << num_samples << " samples, but got " << samples.size() << " samples." << std::endl;
         throw std::runtime_error("Number of samples does not match the expected count");
     }
 
-    std::cout << "Amount of samples to write: " << samples.size() << std::endl;
+    std::cout << "Amount of samples to write: " << num_samples << std::endl;
     
-    output.write(reinterpret_cast<char*>(samples.data()), samples.size() * sizeof(int16_t));
+    output.write(reinterpret_cast<char*>(samples.data()), num_samples * sizeof(int16_t));
     
     if (!output) {
         throw std::runtime_error("Failed to write WAV samples to file.");
