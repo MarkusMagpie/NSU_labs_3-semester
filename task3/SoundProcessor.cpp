@@ -13,16 +13,22 @@ void SoundProcessor::MainProcess() {
     int sample_rate = 0; // expect to be same for every WAV file
     int num_samples = 0;
 
+    int wav_size = 0;
+    int data_size = 0;
+
     // 1 REad all WAV files (samples) and store them in input_streams
     std::cout << "-----1 READ ALL WAV FILES-----" << std::endl;
     bool is_first_file = true;
     for (const auto& input_file : input_files) {
+        std::cout << "Reading input WAV file: " << input_file << std::endl;
         WAVFileReader reader(input_file);
         input_streams.push_back(reader.ReadSamples());
 
         if (is_first_file) {
             sample_rate = reader.GetSampleRate();
             num_samples = reader.GetNumSamples();
+            wav_size = reader.GetWavSize();
+            data_size = reader.GetDataSize();
             is_first_file = false;
         }
     }
@@ -44,12 +50,6 @@ void SoundProcessor::MainProcess() {
 
     std::cout << "START PROCESSING SAMPLES" << std::endl;
     for (const std::unique_ptr<Converter>& converter : converters) {
-        // if (dynamic_cast<MixConverter*>(converter.get())) {
-        //     output = dynamic_cast<MixConverter*>(converter.get())->Convert(output);
-        // } else if (dynamic_cast<MuteConverter*>(converter.get())) {
-        //     output = dynamic_cast<MuteConverter*>(converter.get())->Convert(output);
-        // }
-
         processed_samples = converter->Convert(output);
         output = processed_samples; // apply converters to same output, one by one, changing output
     }
@@ -59,6 +59,6 @@ void SoundProcessor::MainProcess() {
     
     // 4 Save output WAV file
     std::cout << "\n-----4 SAVE OUTPUT WAV FILE-----" << std::endl;
-    WAVFileWriter writer(output_file, sample_rate, num_samples);
+    WAVFileWriter writer(output_file, sample_rate, num_samples, wav_size, data_size);
     writer.WriteSamples(output); // write converted samples to output WAV file
 }

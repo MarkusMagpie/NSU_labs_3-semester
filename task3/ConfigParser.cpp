@@ -24,7 +24,7 @@ void ConfigParser::Parse() {
             continue; // skip empty lines or comments
         }
 
-        converter = CreateConverter(line); // создаю указатель на конвертер: MuteConverter или MixConverter
+        converter = CreateConverter(line); // создаю указатель на конвертер: MuteConverter или MixConverter или AmplifyConverter
         
         if (converter) {
             converters.push_back(std::move(converter));

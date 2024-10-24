@@ -12,8 +12,10 @@ private:
     std::ofstream output;
     int sample_rate;
     int num_samples;
+    int wav_size;
+    int data_size;
 public:
-    WAVFileWriter(std::string& filename, int sample_rate, int num_samples);
+    WAVFileWriter(std::string& filename, int sample_rate, int num_samples, int wav_size, int data_size);
     ~WAVFileWriter();
     
     void WriteHeader();

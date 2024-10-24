@@ -7,7 +7,7 @@
 struct WAVHeader {
     // riff chunk
     char riffHeader[4];        // "RIFF"
-    uint32_t wavSize;          // Размер файла - 8 байт = 44 - 8 = 36 + размер аудиоданных
+    uint32_t wavSize;          // Размер всего файла - 8 байт = 44 - 8 = 36 + размер аудиоданных
     char waveHeader[4];        // "WAVE"
     
     // fmt chunk
@@ -22,5 +22,5 @@ struct WAVHeader {
     
     // data chunk
     char dataHeader[4];        // "data"
-    uint32_t dataSize;         // Размер аудиоданных в байтах
+    uint32_t dataSize;         // размер sampled data
 };

@@ -11,6 +11,9 @@ private:
     std::ifstream input;
     int sample_rate;
     int num_samples;
+
+    int wav_size;
+    int data_size;
 public:
     WAVFileReader(const std::string& filename);
     ~WAVFileReader();
@@ -19,4 +22,7 @@ public:
     std::vector<int16_t> ReadSamples();
     int GetSampleRate();
     int GetNumSamples();
+    
+    int GetWavSize();
+    int GetDataSize();
 };

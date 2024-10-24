@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <algorithm> // Для std::clamp
 
 class AmplifyConverter : public Converter {
 private:
