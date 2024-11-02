@@ -9,3 +9,7 @@ lazy evaluation - ленивая обработка - строки файла ч
 
 КОМПИЛЯЦИЯ:
 g++ -o csv_parser *.cpp -std=c++17
+
+План рассказа:
+
+1 Fold expressions

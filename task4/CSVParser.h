@@ -23,11 +23,20 @@ public:
     CSVParser(std::ifstream& file, char column_delim = ',', char row_delim = '\n', char escape_char = '"', int skip_lines = 0) 
     : file(file), column_delimeter(column_delim), row_delimeter(row_delim), escape_character(escape_char)
     {
+        if (skip_lines < 0) {
+            throw std::runtime_error("Значение параметра skip_lines выходит за пределы допустимого диапазона.");
+        }
         for (int i = 0; i < skip_lines; ++i) { // пропуск строк до начальной 
             std::string dummy;
             std::getline(file, dummy);
+            if (file.eof()) {
+                eof = true;
+                std::cout << "Конец файла достигнут при пропуске " << i + 1 << " строк из " << skip_lines << std::endl;
+                break;
+            }
         }
         ++(*this); // добавил начальную загрузку первой строки (БЫЛА ОШИБКА)
+        // начальное чтение первой строки с использованием перегруженного оператора ++
     }
 
     // итератор возвращает сам себя
@@ -63,7 +72,9 @@ public:
         std::stringstream line_stream(line);
         std::string value;
         
-        while (std::getline(line_stream, value, column_delimeter)) {
+        // считываем значения из строки пока не встретим разделитель column_delimeter
+        // https://en.cppreference.com/w/cpp/string/basic_string/getline
+        while (std::getline(line_stream, value, column_delimeter)) { 
             // удаление символов экранирования, если они есть
             if (!value.empty() && value.front() == escape_character && value.back() == escape_character) {
                 value = value.substr(1, value.size() - 2);
@@ -75,6 +86,9 @@ public:
     }
 
     // преобразование вектора строк в кортеж значений
+    
+    // Пройти по каждому индексу Is из параметр-пакета Is...
+    // Выполнить одно и то же выражение (считывание и запись в элемент кортежа tuple) для каждого индекса.
     template<std::size_t... Is>
     void fill_tuple(const std::vector<std::string>& values, value_type& tuple, std::index_sequence<Is...>) {
         // Используем std::istringstream для конвертации каждой строки в значение нужного типа

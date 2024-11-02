@@ -3,7 +3,11 @@
 #include <iostream>
 #include <tuple>
 
-// рекурсивный шаблон для печати кортежа поэлементно
+// FOLD EXPRESSION
+// рекурсивный шаблон для печати кортежа поэлементно 
+// std::ostream& os - ссылка на поток ввода
+// const Tuple& t - кортеж для печати
+// std::index_sequence<Is...> - последовательность индексов
 template<typename Tuple, std::size_t... Is>
 void print_tuple_impl(std::ostream& os, const Tuple& t, std::index_sequence<Is...>) {
     // каждый элемент кортежа печатаем с помощью std::get и индекса Is
