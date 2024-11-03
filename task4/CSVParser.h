@@ -30,7 +30,7 @@ public:
             std::string dummy;
             std::getline(file, dummy);
             if (file.eof()) {
-                eof = true;
+                eof = true; // => operator!= не выполняется => итерация завершается
                 std::cout << "Конец файла достигнут при пропуске " << i + 1 << " строк из " << skip_lines << std::endl;
                 break;
             }
@@ -41,29 +41,38 @@ public:
 
     // итератор возвращает сам себя
     CSVParser& begin() {
+        // std::cout << "begin" << std::endl;
         return *this;
     }
 
     CSVParser& end() {
+        // std::cout << "end" << std::endl;
         return *this;
     }
 
     // сравнение для окончания итерации
-    bool operator!=(const CSVParser&) const { return !eof; }
+    bool operator!=(const CSVParser&) const { 
+        // std::cout << "operator!=" << std::endl;
+        return !eof; 
+    }
 
     // оператор разыменования - возвращает текущую строку
-    const value_type& operator*() const { return current_tuple; }
+    const value_type& operator*() const { 
+        // std::cout << "operator*" << std::endl;
+        return current_tuple; 
+    }
 
-    // перегруженный оператор++ - оператор инкремента (переход к следующей строке)
+    // перегруженный оператор++ - переход к следующей строке с ее разбором в current_tuple
     CSVParser& operator++() {
+        // std::cout << "operator++" << std::endl;
         std::string line;
         if (std::getline(file, line, row_delimeter)) {
-            parse_line(line); // разбор строки в вектор
+            parse_line(line); // разбор строки, сохранение в current_tuple
         } else {
             eof = true;   
         }
 
-        return *this;
+        return *this; // возвращает current_tuple т.к. перегрузка *
     }
 
     // разбор строки в вектор значений
@@ -88,10 +97,9 @@ public:
     // преобразование вектора строк в кортеж значений
     
     // Пройти по каждому индексу Is из параметр-пакета Is...
-    // Выполнить одно и то же выражение (считывание и запись в элемент кортежа tuple) для каждого индекса.
+    // Выполнить одно и то же выражение (считывание и запись в элемент кортежа current_tuple) для каждого индекса.
     template<std::size_t... Is>
     void fill_tuple(const std::vector<std::string>& values, value_type& tuple, std::index_sequence<Is...>) {
-        // Используем std::istringstream для конвертации каждой строки в значение нужного типа
         ((std::istringstream(values[Is]) >> std::get<Is>(tuple)), ...);
     }
 
