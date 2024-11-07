@@ -19,12 +19,13 @@ WAVFileWriter::WAVFileWriter(std::string& filename, int sample_rate, int num_sam
 
 void WAVFileWriter::WriteHeader() {
     WAVHeader header;
+    WAVChunkBase chunk;
     
     // заполняем заголовки текстовыми данными
     std::memcpy(header.riffHeader, "RIFF", 4);
     std::memcpy(header.waveHeader, "WAVE", 4);
     std::memcpy(header.fmtHeader, "fmt ", 4);
-    std::memcpy(header.dataHeader, "data", 4);
+    std::memcpy(chunk.chunkid, "data", 4);
     
     header.fmtChunkSize = 16;  // Размер fmt-чанка
     header.audioFormat = 1;    // PCM формат
@@ -33,7 +34,7 @@ void WAVFileWriter::WriteHeader() {
     header.bitsPerSample = 16; // 16 бит на сэмпл
     header.byteRate = header.sample_rate * header.bitsPerSample * header.numChannels / 8;
     header.blockAlign = header.numChannels * header.bitsPerSample / 8;
-    header.dataSize = data_size * sample_rate;
+    chunk.chunksize = data_size;
     header.wavSize = wav_size;
 
     std::cout << "\nRIFF chunk: " << std::endl;
@@ -54,12 +55,13 @@ void WAVFileWriter::WriteHeader() {
     std::cout << "---" << std::endl;
 
     std::cout << "\ndata chunk: " << std::endl;
-    std::cout << "Data size: " << header.dataSize << std::endl;
-    std::cout << "Data header: " << header.dataHeader << std::endl;
+    std::cout << "Data size: " << chunk.chunksize << std::endl;
+    std::cout << "Data header: " << std::string(chunk.chunkid, 4) << std::endl;
     std::cout << "---" << std::endl;
 
     // Запись заголовка в файл
     output.write(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
+    output.write(reinterpret_cast<char*>(&chunk), sizeof(WAVChunkBase));
 
     if (!output) {
         throw std::runtime_error("Failed to write WAV header to file.");
@@ -68,6 +70,7 @@ void WAVFileWriter::WriteHeader() {
 
 void WAVFileWriter::WriteSamples(std::vector<int16_t>& samples) {
     if (samples.size() != static_cast<size_t>(num_samples)) {
+        std::cout << "Expected " << num_samples << " samples, but got " << samples.size() << " samples." << std::endl;
         throw std::runtime_error("Number of samples does not match the expected count");
     }
 

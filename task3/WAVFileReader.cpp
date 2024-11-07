@@ -31,8 +31,19 @@ void WAVFileReader::ReadHeader() {
         throw std::runtime_error("Wrong WAV file format: must be PCM, 16-bit and mono audio");
     }
 
+    WAVChunkBase chunk;
+    
+    do
+    {
+        input.ignore(chunk.chunksize);
+        input.read(reinterpret_cast<char*>(&chunk), sizeof(WAVChunkBase));
+        if (!input) {
+            throw std::runtime_error("Failed to read WAV chunk from file");
+        }
+    } while (chunk.chunkid[0] != 'd' || chunk.chunkid[1] != 'a' || chunk.chunkid[2] != 't' || chunk.chunkid[3] != 'a');
+
     sample_rate = header.sample_rate;
-    num_samples = header.dataSize / (header.numChannels * header.bitsPerSample / 8) * sample_rate;
+    num_samples = chunk.chunksize / (header.numChannels * header.bitsPerSample / 8);
 
     std::cout << "\nRIFF chunk: " << std::endl;
     std::cout << "Riff header: " << header.riffHeader << std::endl;
@@ -53,9 +64,9 @@ void WAVFileReader::ReadHeader() {
     std::cout << "---" << std::endl;
 
     std::cout << "\ndata chunk: " << std::endl;
-    std::cout << "Data size: " << header.dataSize << std::endl;
-    data_size = header.dataSize;
-    std::cout << "Data header: " << header.dataHeader << std::endl;
+    std::cout << "Data size: " << chunk.chunksize << std::endl;
+    data_size = chunk.chunksize;
+    std::cout << "Data header: " << std::string(chunk.chunkid, 4) << std::endl;
     std::cout << "---" << std::endl;
 }
 
@@ -64,11 +75,13 @@ std::vector<int16_t> WAVFileReader::ReadSamples() {
     // samples.data() - указатель на первый элемент вектора samples
     // reinterpret_cast<char*>(samples.data()) - преобразование int16_t* указателя на первый элемент вектора samples в указатель char*
     // num_samples * sizeof(int16_t) - общее количество всех сэмплов в векторе
-    input.read(reinterpret_cast<char*>(samples.data()), num_samples * sizeof(int16_t));
 
-    if (!input) {
-        throw std::runtime_error("Failed to read WAV samples from file");
-    }
+    input.read(reinterpret_cast<char*>(samples.data()), num_samples * sizeof(int16_t)); // 1 вариант
+    // 2 вариант
+    // int16_t sample;
+    // while (input.read(reinterpret_cast<char*>(&sample), (sizeof(int16_t)))) {
+    //     samples.push_back(sample);
+    // }
 
     return samples;
 }

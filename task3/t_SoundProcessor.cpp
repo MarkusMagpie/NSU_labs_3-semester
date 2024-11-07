@@ -57,11 +57,12 @@ void CreateWAVFileWithoutSamples(const std::string& filename) {
     std::ofstream file(filename, std::ios::binary);
     if (file.is_open()) {
         WAVHeader header;
+        WAVChunkBase chunk;
         header.audioFormat = 1;
         header.numChannels = 1;
         header.bitsPerSample = 16;
         header.sample_rate = 44100;
-        header.dataSize = 100;  // must cause error!
+        chunk.chunksize = 100;  // must cause error!
 
         file.write(reinterpret_cast<const char*>(&header), sizeof(WAVHeader));
         file.close();
@@ -110,7 +111,7 @@ TEST(ConfigParserTest, ErrorMessageForNonExistentConverterLineTest) {
     try {
         parser.Parse();
     } catch (const std::runtime_error& e) {
-        EXPECT_STREQ("Unknown config line: uaaaaxdrge 0 666", e.what());
+        EXPECT_STREQ("Unknown command: uaaaaxdrge", e.what());
     } catch (...) {
         FAIL();
     }
@@ -122,8 +123,9 @@ TEST(WAVFileWriterTest, NonExistentWritingFileTest) {
     int sample_rate = 44100;
     int num_samples = 100;
 
+
     try {
-        WAVFileWriter writer(non_existent_file, sample_rate, num_samples);
+        WAVFileWriter writer(non_existent_file, sample_rate, num_samples, 0, 0);
     } catch (const std::runtime_error& e) {
         EXPECT_STREQ(e.what(), "Failed to open WAV file for writing: /non_existent_directory/non_existent.wav");
         std::cout << e.what() << std::endl;
@@ -137,7 +139,7 @@ TEST(WAVFileWriterTest, WrongSampleCountTest) {
     int sample_rate = 44100;
     int num_samples = 100;
 
-    WAVFileWriter writer(filename, sample_rate, num_samples);
+    WAVFileWriter writer(filename, sample_rate, num_samples, 0, 0);
 
     std::vector<int16_t> mismatched_samples(num_samples + 10); // в параметрах функции WriteSamples - на 10 больше сэмплов чем ожидается
 
