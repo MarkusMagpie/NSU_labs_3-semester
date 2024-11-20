@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <sstream>
 #include <iostream>
 #include <tuple>
@@ -126,7 +125,7 @@ public:
         std::istringstream iss(value_str);
         if (!(iss >> value)) {
             last_failed_column = column; // отслеживаем неудачную колонку
-            std::cerr << "Ошибка преобразования в строке " << current_line 
+            std::cout << "Ошибка типа данных в строке " << current_line 
                       << ", колонке " << column << ": " << value_str << std::endl;
             
             return false;
