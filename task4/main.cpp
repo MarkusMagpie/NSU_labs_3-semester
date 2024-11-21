@@ -10,7 +10,7 @@ int main() {
 
     std::cout << "SUBTASK 2 AND 3 TEST" << std::endl;
     std::ifstream file("weekday.csv");
-    CSVParser<std::string, std::string, std::string, std::string> parser(file, ',', '\n', '"', 1);
+    CSVParser<std::string, std::string, int, int> parser(file, ',', '\n', '"', 1);
     for (const auto& row : parser) {
         // std::cout << "iteration" << std::endl;
         std::cout << row << std::endl;
