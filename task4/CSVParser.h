@@ -91,7 +91,7 @@ public:
         while (std::getline(line_stream, value, column_delimeter)) { 
             // удаление символов экранирования, если они есть ("dfefg", " - escape character)
             if (!value.empty() && value.front() == escape_character && value.back() == escape_character) {
-                std::cout << "Нашел символ экранирования в строке: " << value << ", удаляю его" << std::endl;
+                std::cout << "Нашел символ экранирования: " << value << ", удаляю его" << std::endl;
                 value = value.substr(1, value.size() - 2);
             }
 
